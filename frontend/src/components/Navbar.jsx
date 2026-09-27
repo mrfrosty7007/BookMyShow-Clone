@@ -84,6 +84,19 @@ export const Navbar = ({ selectedCity, onSelectCity }) => {
               Movies
             </NavLink>
 
+            {user && (
+              <NavLink
+                to="/my-bookings"
+                className={({ isActive }) =>
+                  `px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                    isActive ? 'text-[#f84464]' : 'text-gray-300 hover:text-white'
+                  }`
+                }
+              >
+                My Bookings
+              </NavLink>
+            )}
+
             {/* Auth Button or User profile */}
             {authLoading ? (
               <div className="w-20 h-9 rounded-xl bg-gray-800/60 animate-pulse" />
@@ -163,13 +176,22 @@ export const Navbar = ({ selectedCity, onSelectCity }) => {
             </NavLink>
 
             {user ? (
-              <NavLink
-                to="/profile"
-                onClick={closeMobileMenu}
-                className="px-3 py-2 rounded-lg text-sm font-medium text-gray-200 hover:bg-gray-800"
-              >
-                Profile ({user.name})
-              </NavLink>
+              <>
+                <NavLink
+                  to="/my-bookings"
+                  onClick={closeMobileMenu}
+                  className="px-3 py-2 rounded-lg text-sm font-medium text-gray-200 hover:bg-gray-800"
+                >
+                  My Bookings
+                </NavLink>
+                <NavLink
+                  to="/profile"
+                  onClick={closeMobileMenu}
+                  className="px-3 py-2 rounded-lg text-sm font-medium text-gray-200 hover:bg-gray-800"
+                >
+                  Profile ({user.name})
+                </NavLink>
+              </>
             ) : (
               <>
                 <NavLink

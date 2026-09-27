@@ -2,6 +2,9 @@ import { Routes, Route } from 'react-router-dom';
 import { MainLayout } from '../layouts/MainLayout.jsx';
 import { Home } from '../pages/Home.jsx';
 import { MovieDetails } from '../pages/MovieDetails.jsx';
+import { ShowDetails } from '../pages/ShowDetails.jsx';
+import { BookingConfirmation } from '../pages/BookingConfirmation.jsx';
+import { MyBookings } from '../pages/MyBookings.jsx';
 import { LoginPage } from '../pages/LoginPage.jsx';
 import { RegisterPage } from '../pages/RegisterPage.jsx';
 import { ProfilePage } from '../pages/ProfilePage.jsx';
@@ -18,10 +21,27 @@ export const AppRoutes = () => {
         {/* Public Routes */}
         <Route index element={<Home />} />
         <Route path="movie/:id" element={<MovieDetails />} />
+        <Route path="/show/:showId" element={<ShowDetails />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
 
         {/* Protected Routes */}
+        <Route
+          path="my-bookings"
+          element={
+            <ProtectedRoute>
+              <MyBookings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="booking/confirmation/:bookingId"
+          element={
+            <ProtectedRoute>
+              <BookingConfirmation />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="profile"
           element={

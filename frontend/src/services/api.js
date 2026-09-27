@@ -40,6 +40,14 @@ export const getTheaters = (filters = {}) => apiClient.get('/theaters', { params
  */
 export const getShowsByMovie = (movieId) => apiClient.get(`/shows/movie/${movieId}`);
 export const getShows = (filters = {}) => apiClient.get('/shows', { params: filters });
+export const getShow = (id) => apiClient.get(`/shows/${id}`);
+
+/**
+ * Booking API Services - Phase 3.3
+ */
+export const createBooking = (bookingData) => apiClient.post('/bookings/create', bookingData);
+export const getMyBookings = () => apiClient.get('/bookings/me');
+export const getBooking = (id) => apiClient.get(`/bookings/${id}`);
 
 /**
  * General API methods preserving Phase 0 compatibility
@@ -51,6 +59,10 @@ export const apiService = {
   getCities,
   getShowsByMovie,
   getShows,
+  getShow,
+  createBooking,
+  getMyBookings,
+  getBooking,
 };
 
 export default apiClient;

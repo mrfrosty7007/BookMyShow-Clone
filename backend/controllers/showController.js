@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import Show from '../models/Show.js';
 import Movie from '../models/Movie.js';
 import Theater from '../models/Theater.js';
+import SeatLock from '../models/SeatLock.js';
 
 /**
  * Generates standard 100-seat theater layout (Rows A–J, Seats 1–10)
@@ -126,9 +127,78 @@ export const getShowById = async (req, res) => {
       });
     }
 
+    const showDate = new Date(show.showTime);
+    const time = showDate.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    });
+    const date = showDate.toISOString().split('T')[0];
+    const showObj = show.toObject();
+
+    // Standardized 10x12 auditorium categorized seat layout for Phase 3.1
+    const seatLayout = {
+      rows: 10,
+      columns: 12,
+      categories: {
+        VIP: {
+          name: 'VIP',
+          rows: ['A', 'B'],
+          price: 400,
+        },
+        Premium: {
+          name: 'Premium',
+          rows: ['C', 'D', 'E', 'F'],
+          price: 300,
+        },
+        Regular: {
+          name: 'Regular',
+          rows: ['G', 'H', 'I', 'J'],
+          price: 200,
+        },
+      },
+    };
+
+    // Extract booked seats from DB or use realistic seed
+    const defaultMockBooked = ['A3', 'A4', 'B8', 'C5', 'C6', 'D9', 'F2', 'H7', 'J11'];
+    const bookedInDb = Array.isArray(show.seats)
+      ? show.seats.filter((s) => s.status === 'booked').map((s) => s.seatNumber)
+      : [];
+    const bookedSeats = bookedInDb.length > 0 ? bookedInDb : defaultMockBooked;
+
+    // Phase 3.2: Query active unexpired seat locks for this show
+    const activeLocks = await SeatLock.find({
+      showId: id,
+      expiresAt: { $gt: new Date() },
+    });
+
+    const lockedSeats = activeLocks.map((lock) => ({
+      seatNumber: lock.seatNumber,
+      userId: lock.userId,
+      expiresIn: Math.max(0, Math.floor((lock.expiresAt.getTime() - Date.now()) / 1000)),
+    }));
+
     return res.status(200).json({
       success: true,
-      show,
+      _id: show._id,
+      time,
+      date,
+      price: show.price,
+      screen: show.screen,
+      movie: show.movie,
+      theater: show.theater,
+      seats: show.seats,
+      seatLayout,
+      bookedSeats,
+      lockedSeats,
+      show: {
+        ...showObj,
+        time,
+        date,
+        seatLayout,
+        bookedSeats,
+        lockedSeats,
+      },
     });
   } catch (error) {
     return res.status(500).json({

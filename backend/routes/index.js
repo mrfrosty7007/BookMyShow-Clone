@@ -4,6 +4,7 @@ import authRouter from './auth.js';
 import movieRouter from './movieRoutes.js';
 import theaterRouter from './theaterRoutes.js';
 import showRouter from './showRoutes.js';
+import bookingRouter from './bookingRoutes.js';
 
 const router = express.Router();
 
@@ -15,5 +16,6 @@ router.use('/auth', authRouter);
 router.use('/movies', movieRouter);
 router.use('/theaters', theaterRouter);
 router.use('/shows', showRouter);
+router.use('/bookings', bookingRouter);
 
 export default router;

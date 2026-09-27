@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { MapPin, Monitor, Armchair } from 'lucide-react';
 
 /**
@@ -30,6 +31,7 @@ const formatShowDate = (dateStr) => {
  * Show Card Component for Movie Details Page
  */
 export const ShowCard = ({ show }) => {
+  const navigate = useNavigate();
   if (!show) return null;
 
   const { theater, screen, showTime, price } = show;
@@ -79,21 +81,15 @@ export const ShowCard = ({ show }) => {
           <div className="text-[10px] text-gray-400 uppercase tracking-wider">Base Price</div>
         </div>
 
-        {/* Action Button: Disabled styling for Phase 2, interactive in Phase 3 */}
-        <div className="relative group">
-          <button
-            type="button"
-            disabled
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gray-800/80 text-gray-400 border border-gray-700/50 text-xs font-bold cursor-not-allowed transition-all opacity-85"
-            title="Interactive seat selection unlocks in Phase 3"
-          >
-            <Armchair className="w-3.5 h-3.5" />
-            <span>Select Seats</span>
-          </button>
-          <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 hidden group-hover:block whitespace-nowrap text-[10px] font-semibold text-[#f84464] bg-black/90 px-2 py-0.5 rounded border border-gray-800">
-            Booking opens in Phase 3
-          </div>
-        </div>
+        {/* Action Button: Navigate to Show Details */}
+        <button
+          type="button"
+          onClick={() => navigate(`/show/${show._id}`)}
+          className="flex items-center gap-1.5 px-4 sm:px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-xs font-bold shadow-md shadow-cyan-500/25 hover:shadow-lg hover:shadow-cyan-500/40 hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 cursor-pointer"
+        >
+          <Armchair className="w-3.5 h-3.5" />
+          <span>Select Seats</span>
+        </button>
       </div>
     </div>
   );

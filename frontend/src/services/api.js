@@ -57,6 +57,26 @@ export const getAdminProfile = () => apiClient.get('/admin/profile');
 export const getAdminDashboard = () => apiClient.get('/admin/dashboard');
 
 /**
+ * Movie Management API Services - Phase 4.2
+ */
+export const getAdminMovies = (params = {}) => apiClient.get('/admin/movies', { params });
+export const createMovie = (movieData) => {
+  const isFormData = typeof FormData !== 'undefined' && movieData instanceof FormData;
+  return apiClient.post('/admin/movies', movieData, {
+    headers: isFormData ? { 'Content-Type': 'multipart/form-data' } : {},
+  });
+};
+export const updateMovie = (id, movieData) => {
+  const isFormData = typeof FormData !== 'undefined' && movieData instanceof FormData;
+  return apiClient.put(`/admin/movies/${id}`, movieData, {
+    headers: isFormData ? { 'Content-Type': 'multipart/form-data' } : {},
+  });
+};
+export const deleteMovie = (id) => apiClient.delete(`/admin/movies/${id}`);
+export const restoreMovie = (id) => apiClient.patch(`/admin/movies/${id}/restore`);
+export const toggleFeatured = (id) => apiClient.patch(`/admin/movies/${id}/featured`);
+
+/**
  * General API methods preserving Phase 0 compatibility
  */
 export const apiService = {

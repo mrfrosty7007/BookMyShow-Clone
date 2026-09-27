@@ -31,6 +31,10 @@ export default [
         setInterval: 'readonly',
         clearInterval: 'readonly',
         process: 'readonly',
+        URL: 'readonly',
+        FormData: 'readonly',
+        Blob: 'readonly',
+        File: 'readonly',
       },
     },
     settings: {

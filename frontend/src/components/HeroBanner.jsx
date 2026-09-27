@@ -15,9 +15,11 @@ const formatDuration = (minutes) => {
  * Hero Banner showcasing featured/highest-rated movie
  */
 export const HeroBanner = ({ movies = [], movie = null }) => {
-  // Auto-select the highest rated movie if movie not explicitly passed
+  // Prioritize explicitly featured movie, then highest rated active movie
+  const explicitFeatured = movies.find((m) => m.featured);
   const featured =
     movie ||
+    explicitFeatured ||
     (movies.length > 0
       ? movies.reduce(
           (highest, curr) => (curr.rating > (highest?.rating || 0) ? curr : highest),
@@ -32,6 +34,7 @@ export const HeroBanner = ({ movies = [], movie = null }) => {
     title,
     description,
     banner,
+    backdrop,
     poster,
     rating = 0,
     certificate = 'U/A',
@@ -39,9 +42,10 @@ export const HeroBanner = ({ movies = [], movie = null }) => {
     language,
     genre = [],
     releaseDate,
+    featured: isFeatured,
   } = featured;
 
-  const bgImage = banner || poster;
+  const bgImage = backdrop || banner || poster;
   const formattedDate = releaseDate
     ? new Date(releaseDate).toLocaleDateString('en-US', {
         month: 'short',
@@ -72,7 +76,7 @@ export const HeroBanner = ({ movies = [], movie = null }) => {
             {/* Top Badges */}
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2.5">
               <span className="px-2.5 py-1 rounded-md bg-[#f84464]/20 border border-[#f84464]/40 text-[#f84464] text-xs font-bold uppercase tracking-wider">
-                Featured
+                {isFeatured ? 'Featured Premiere' : 'Trending Now'}
               </span>
 
               <div className="flex items-center gap-1.5 px-3 py-1 rounded-md bg-amber-400/15 border border-amber-400/30 text-amber-400 text-xs font-bold">

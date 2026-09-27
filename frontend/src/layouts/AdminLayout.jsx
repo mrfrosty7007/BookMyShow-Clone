@@ -28,7 +28,7 @@ const NAV_ITEMS = [
     name: 'Movies',
     path: '/admin/movies',
     icon: Film,
-    badge: 'P4.2',
+    badge: 'Live',
     badgeColor: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
   },
   {

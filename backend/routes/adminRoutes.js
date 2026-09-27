@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { adminLogin, getAdminProfile, getAdminDashboard } from '../controllers/adminController.js';
 import { adminAuth } from '../middleware/adminAuth.js';
+import adminMovieRoutes from './adminMovieRoutes.js';
 
 const router = Router();
 
@@ -24,5 +25,11 @@ router.get('/profile', adminAuth, getAdminProfile);
  * @access  Private (Admin only)
  */
 router.get('/dashboard', adminAuth, getAdminDashboard);
+
+/**
+ * Movie Management Routes - Phase 4.2
+ * Mounts /api/admin/movies
+ */
+router.use('/movies', adminMovieRoutes);
 
 export default router;

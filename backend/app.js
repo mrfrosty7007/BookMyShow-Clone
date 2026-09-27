@@ -3,12 +3,17 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import mongoSanitize from 'express-mongo-sanitize';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import apiRoutes from './routes/index.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
-app.use(helmet());
+app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 
 // Allowed origins for CORS with credentials
 const allowedOrigins = [
@@ -43,6 +48,9 @@ app.use(cookieParser());
 
 // Sanitize MongoDB queries to prevent NoSQL injection ($ and . operator injection)
 app.use(mongoSanitize());
+
+// Serve static uploaded movie assets
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Centralized API route registration
 app.use('/api', apiRoutes);

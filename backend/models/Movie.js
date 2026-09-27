@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 /**
- * Movie Schema definition for BookMyShow Clone
+ * Movie Schema definition for BookMyShow Clone (Phase 4.2 Enhanced)
  */
 const movieSchema = new mongoose.Schema(
   {
@@ -20,6 +20,11 @@ const movieSchema = new mongoose.Schema(
       required: [true, 'Movie poster URL is required'],
       trim: true,
     },
+    backdrop: {
+      type: String,
+      default: '',
+      trim: true,
+    },
     banner: {
       type: String,
       default: '',
@@ -31,13 +36,32 @@ const movieSchema = new mongoose.Schema(
       min: [1, 'Duration must be at least 1 minute'],
     },
     language: {
-      type: String,
-      required: [true, 'Movie language is required'],
-      trim: true,
+      type: [String],
+      default: ['English'],
+      set: (val) => {
+        if (Array.isArray(val)) return val;
+        if (typeof val === 'string') {
+          return val
+            .split(',')
+            .map((s) => s.trim())
+            .filter(Boolean);
+        }
+        return ['English'];
+      },
     },
     genre: {
       type: [String],
       default: [],
+      set: (val) => {
+        if (Array.isArray(val)) return val;
+        if (typeof val === 'string') {
+          return val
+            .split(',')
+            .map((s) => s.trim())
+            .filter(Boolean);
+        }
+        return [];
+      },
     },
     releaseDate: {
       type: Date,
@@ -51,17 +75,47 @@ const movieSchema = new mongoose.Schema(
     },
     certificate: {
       type: String,
+      enum: {
+        values: ['U', 'U/A', 'A'],
+        message: '{VALUE} is not a valid certificate rating',
+      },
       default: 'U/A',
       trim: true,
+    },
+    trailer: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    featured: {
+      type: Boolean,
+      default: false,
     },
     isActive: {
       type: Boolean,
       default: true,
+      index: true,
+    },
+    deletedAt: {
+      type: Date,
+      default: null,
     },
   },
   {
     timestamps: true,
   }
 );
+
+/**
+ * Pre-save synchronization hook: ensure backdrop and legacy banner stay synchronized
+ */
+movieSchema.pre('save', function (next) {
+  if (this.backdrop && !this.banner) {
+    this.banner = this.backdrop;
+  } else if (this.banner && !this.backdrop) {
+    this.backdrop = this.banner;
+  }
+  next();
+});
 
 export default mongoose.model('Movie', movieSchema);

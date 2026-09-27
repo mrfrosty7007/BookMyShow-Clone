@@ -1,16 +1,21 @@
+import helmet from 'helmet';
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import mongoSanitize from 'express-mongo-sanitize';
 import apiRoutes from './routes/index.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
+app.use(helmet());
 
 // Allowed origins for CORS with credentials
 const allowedOrigins = [
   'http://localhost:5173',
   'http://127.0.0.1:5173',
+  'http://localhost:5174',
+  'http://127.0.0.1:5174',
   'http://localhost:3000',
   process.env.CLIENT_URL,
 ].filter(Boolean);
@@ -35,6 +40,9 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+// Sanitize MongoDB queries to prevent NoSQL injection ($ and . operator injection)
+app.use(mongoSanitize());
 
 // Centralized API route registration
 app.use('/api', apiRoutes);

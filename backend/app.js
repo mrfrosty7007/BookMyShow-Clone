@@ -61,6 +61,9 @@ app.get('/', (_req, res) => {
         logout: 'POST /api/auth/logout',
         me: 'GET /api/auth/me',
       },
+      movies: '/api/movies',
+      theaters: '/api/theaters',
+      shows: '/api/shows',
     },
   });
 });

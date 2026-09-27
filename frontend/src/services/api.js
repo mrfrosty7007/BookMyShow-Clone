@@ -24,10 +24,33 @@ apiClient.interceptors.response.use(
 );
 
 /**
+ * Movie API Services
+ */
+export const getMovies = () => apiClient.get('/movies');
+export const getMovie = (id) => apiClient.get(`/movies/${id}`);
+
+/**
+ * Theater & City API Services
+ */
+export const getCities = () => apiClient.get('/theaters/cities');
+export const getTheaters = (filters = {}) => apiClient.get('/theaters', { params: filters });
+
+/**
+ * Show API Services
+ */
+export const getShowsByMovie = (movieId) => apiClient.get(`/shows/movie/${movieId}`);
+export const getShows = (filters = {}) => apiClient.get('/shows', { params: filters });
+
+/**
  * General API methods preserving Phase 0 compatibility
  */
 export const apiService = {
   getHealth: () => apiClient.get('/health'),
+  getMovies,
+  getMovie,
+  getCities,
+  getShowsByMovie,
+  getShows,
 };
 
 export default apiClient;

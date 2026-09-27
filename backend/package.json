@@ -9,7 +9,9 @@
     "dev": "nodemon server.js",
     "lint": "eslint .",
     "format": "prettier --write \"**/*.js\"",
-    "format:check": "prettier --check \"**/*.js\""
+    "format:check": "prettier --check \"**/*.js\"",
+    "seed": "node seed/seed.js",
+    "seed:clear": "node seed/clear.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

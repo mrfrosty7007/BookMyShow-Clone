@@ -42,7 +42,7 @@ const NAV_ITEMS = [
     name: 'Shows',
     path: '/admin/shows',
     icon: Calendar,
-    badge: 'P4.4',
+    badge: 'Live',
     badgeColor: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
   },
   {

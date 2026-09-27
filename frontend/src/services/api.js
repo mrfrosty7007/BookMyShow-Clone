@@ -96,6 +96,19 @@ export const duplicateScreen = (theaterId, screenId) =>
   apiClient.post(`/admin/theaters/${theaterId}/screens/${screenId}/duplicate`);
 
 /**
+ * Show Scheduling & Conflict Detection API Services - Phase 4.4
+ */
+export const getAdminShows = (params = {}) => apiClient.get('/admin/shows', { params });
+export const getAdminShowById = (id) => apiClient.get(`/admin/shows/${id}`);
+export const createAdminShow = (showData) => apiClient.post('/admin/shows', showData);
+export const updateAdminShow = (id, showData) => apiClient.put(`/admin/shows/${id}`, showData);
+export const deleteAdminShow = (id) => apiClient.delete(`/admin/shows/${id}`);
+export const cancelAdminShow = (id) => apiClient.patch(`/admin/shows/${id}/cancel`);
+export const checkShowConflict = (conflictData) =>
+  apiClient.post('/admin/shows/check-conflict', conflictData);
+export const bulkCreateShows = (bulkData) => apiClient.post('/admin/shows/bulk', bulkData);
+
+/**
  * General API methods preserving Phase 0 compatibility
  */
 export const apiService = {

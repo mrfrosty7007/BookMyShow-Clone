@@ -8,11 +8,17 @@ import { fileURLToPath } from 'url';
 import apiRoutes from './routes/index.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { apiRateLimiter } from './middleware/rateLimiter.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+// Trust reverse proxy (Railway, Render, Cloudflare) for correct IP forwarding and rate-limiting
+app.set('trust proxy', 1);
+
+// Configure HTTP security headers
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 
 // Allowed origins for CORS with credentials
@@ -23,12 +29,14 @@ const allowedOrigins = [
   'http://127.0.0.1:5174',
   'http://localhost:3000',
   process.env.CLIENT_URL,
+  process.env.CLIENT_URL?.replace(/\/+$/, ''),
 ].filter(Boolean);
 
 // CORS configuration (credentials: true requires specific origins, not wildcard)
 const corsOptions = {
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
       callback(null, true);
     } else {
       callback(new Error(`Origin ${origin} not allowed by CORS`));
@@ -52,8 +60,8 @@ app.use(mongoSanitize());
 // Serve static uploaded movie assets
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Centralized API route registration
-app.use('/api', apiRoutes);
+// Centralized API route registration with production rate limiting
+app.use('/api', apiRateLimiter, apiRoutes);
 
 // Root route
 app.get('/', (_req, res) => {

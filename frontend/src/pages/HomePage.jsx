@@ -128,7 +128,7 @@ export const HomePage = () => {
 
           <div className="mt-4 pt-3 border-t border-gray-800/60 flex items-center justify-between text-[11px] text-gray-400">
             <span>Route: GET /api/health</span>
-            <span>Target: http://localhost:5000</span>
+            <span>Target: Active Backend API</span>
           </div>
         </div>
       </section>

@@ -25,11 +25,20 @@ export const getSocket = (userId = null) => {
     const sessionId = getClientSessionId();
     const resolvedUserId = userId || sessionId;
 
-    // Use current origin in development (proxied by Vite) or fallback to localhost:5000
-    const serverUrl =
-      typeof window !== 'undefined' && window.location.port === '5173'
-        ? window.location.origin
-        : 'http://localhost:5000';
+    // Resolve Socket.IO server target:
+    // If VITE_API_URL is configured (e.g. https://api.example.com/api), use its origin.
+    // In local development or reverse proxy setups, use current window origin.
+    let serverUrl = 'http://localhost:5000';
+    const envApiUrl = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL;
+    if (envApiUrl && !envApiUrl.startsWith('/')) {
+      try {
+        serverUrl = new URL(envApiUrl).origin;
+      } catch {
+        serverUrl = envApiUrl.replace(/\/api\/?$/, '');
+      }
+    } else if (typeof window !== 'undefined') {
+      serverUrl = window.location.origin;
+    }
 
     socket = io(serverUrl, {
       withCredentials: true,

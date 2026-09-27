@@ -55,14 +55,3 @@ export const handleGracefulShutdown = async (signal = 'SIGINT') => {
     console.error(`[MongoDB] Error during graceful shutdown: ${err.message}`);
   }
 };
-
-// Process termination signal hooks
-process.on('SIGINT', async () => {
-  await handleGracefulShutdown('SIGINT');
-  process.exit(0);
-});
-
-process.on('SIGTERM', async () => {
-  await handleGracefulShutdown('SIGTERM');
-  process.exit(0);
-});

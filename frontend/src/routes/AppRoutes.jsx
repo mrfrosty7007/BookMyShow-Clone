@@ -1,5 +1,6 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { MainLayout } from '../layouts/MainLayout.jsx';
+import { AdminLayout } from '../layouts/AdminLayout.jsx';
 import { Home } from '../pages/Home.jsx';
 import { MovieDetails } from '../pages/MovieDetails.jsx';
 import { ShowDetails } from '../pages/ShowDetails.jsx';
@@ -10,13 +11,38 @@ import { RegisterPage } from '../pages/RegisterPage.jsx';
 import { ProfilePage } from '../pages/ProfilePage.jsx';
 import { NotFoundPage } from '../pages/NotFoundPage.jsx';
 import { ProtectedRoute } from '../components/ProtectedRoute.jsx';
+import { AdminRoute } from '../components/AdminRoute.jsx';
+import { AdminLogin } from '../pages/admin/AdminLogin.jsx';
+import { AdminDashboard } from '../pages/admin/AdminDashboard.jsx';
 
 /**
- * Centralized Application Routes with Protected Route Integration
+ * Centralized Application Routes with Protected Customer and Executive Admin Route Integration
  */
 export const AppRoutes = () => {
   return (
     <Routes>
+      {/* Admin Portal Authentication */}
+      <Route path="/admin/login" element={<AdminLogin />} />
+
+      {/* Protected Admin Executive Console */}
+      <Route
+        path="/admin"
+        element={
+          <AdminRoute>
+            <AdminLayout />
+          </AdminRoute>
+        }
+      >
+        <Route index element={<Navigate to="/admin/dashboard" replace />} />
+        <Route path="dashboard" element={<AdminDashboard />} />
+        <Route path="movies" element={<AdminDashboard />} />
+        <Route path="theaters" element={<AdminDashboard />} />
+        <Route path="shows" element={<AdminDashboard />} />
+        <Route path="bookings" element={<AdminDashboard />} />
+        <Route path="users" element={<AdminDashboard />} />
+      </Route>
+
+      {/* Main Customer Storefront */}
       <Route path="/" element={<MainLayout />}>
         {/* Public Routes */}
         <Route index element={<Home />} />

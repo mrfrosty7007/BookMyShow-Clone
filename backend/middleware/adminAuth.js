@@ -2,13 +2,14 @@ import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 
 /**
- * Authentication Middleware:
- * Reads JWT token from HTTP-only cookie, verifies it, and attaches the User object to req.user.
+ * Admin Authentication & Authorization Middleware
+ * Verifies JWT token from HTTP-only cookie or Authorization: Bearer header,
+ * loads user, and verifies that role is 'admin'.
  */
-export const protect = async (req, res, next) => {
+export const adminAuth = async (req, res, next) => {
   let token = req.cookies?.jwt;
 
-  // Also check Authorization header: Bearer <token>
+  // Also support Authorization header: Bearer <token>
   if (!token && req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
     token = req.headers.authorization.split(' ')[1];
   }
@@ -32,6 +33,14 @@ export const protect = async (req, res, next) => {
       });
     }
 
+    // Role-based authorization check
+    if (user.role !== 'admin') {
+      return res.status(403).json({
+        status: 'error',
+        message: 'Forbidden. Administrator privileges required.',
+      });
+    }
+
     req.user = user;
     next();
   } catch (error) {
@@ -49,21 +58,4 @@ export const protect = async (req, res, next) => {
   }
 };
 
-/**
- * Optional Role-based authorization middleware
- * @param  {...string} roles
- */
-export const authorize = (...roles) => {
-  return (req, res, next) => {
-    if (!req.user || !roles.includes(req.user.role)) {
-      return res.status(403).json({
-        status: 'error',
-        message: `User role '${req.user?.role || 'unknown'}' is not authorized to access this route`,
-      });
-    }
-    next();
-  };
-};
-
-export { adminAuth } from './adminAuth.js';
-export default protect;
+export default adminAuth;

@@ -7,6 +7,7 @@ import Show from '../models/Show.js';
 import { generateSeatLayout } from '../controllers/showController.js';
 import movies from './movies.js';
 import theaters from './theaters.js';
+import { seedAdmin } from './admin.js';
 
 /**
  * Generates approximately 40 relational shows linking movies and theaters
@@ -80,7 +81,10 @@ export const seedDatabase = async () => {
     const showsToInsert = generateShows(createdMovies, createdTheaters);
     const createdShows = await Show.insertMany(showsToInsert);
 
-    // 5. Output summary
+    // 5. Seed default administrator account
+    await seedAdmin();
+
+    // 6. Output summary
     console.log(`Movies inserted: ${createdMovies.length}`);
     console.log(`Theaters inserted: ${createdTheaters.length}`);
     console.log(`Shows inserted: ${createdShows.length}`);

@@ -11,6 +11,7 @@
     "format": "prettier --write \"**/*.js\"",
     "format:check": "prettier --check \"**/*.js\"",
     "seed": "node seed/seed.js",
+    "seed:admin": "node seed/admin.js",
     "seed:clear": "node seed/clear.js"
   },
   "dependencies": {

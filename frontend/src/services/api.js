@@ -50,6 +50,13 @@ export const getMyBookings = () => apiClient.get('/bookings/me');
 export const getBooking = (id) => apiClient.get(`/bookings/${id}`);
 
 /**
+ * Admin API Services - Phase 4.1
+ */
+export const adminLogin = (credentials) => apiClient.post('/admin/login', credentials);
+export const getAdminProfile = () => apiClient.get('/admin/profile');
+export const getAdminDashboard = () => apiClient.get('/admin/dashboard');
+
+/**
  * General API methods preserving Phase 0 compatibility
  */
 export const apiService = {

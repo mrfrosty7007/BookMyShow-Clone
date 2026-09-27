@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
-import { Film, Menu, X, Search, LogOut } from 'lucide-react';
+import { Film, Menu, X, Search, LogOut, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth.js';
 import { CitySelector } from './CitySelector.jsx';
 
@@ -97,6 +97,16 @@ export const Navbar = ({ selectedCity, onSelectCity }) => {
               </NavLink>
             )}
 
+            {user?.role === 'admin' && (
+              <NavLink
+                to="/admin/dashboard"
+                className="px-3 py-1.5 rounded-lg text-xs font-bold text-cyan-300 bg-cyan-950/60 border border-cyan-500/40 hover:bg-cyan-900/60 transition-all flex items-center gap-1.5 shadow-sm shadow-cyan-500/20"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Admin Console</span>
+              </NavLink>
+            )}
+
             {/* Auth Button or User profile */}
             {authLoading ? (
               <div className="w-20 h-9 rounded-xl bg-gray-800/60 animate-pulse" />
@@ -177,6 +187,16 @@ export const Navbar = ({ selectedCity, onSelectCity }) => {
 
             {user ? (
               <>
+                {user.role === 'admin' && (
+                  <NavLink
+                    to="/admin/dashboard"
+                    onClick={closeMobileMenu}
+                    className="px-3 py-2 rounded-lg text-sm font-bold text-cyan-300 bg-cyan-950/60 border border-cyan-500/40 flex items-center gap-2"
+                  >
+                    <ShieldCheck className="w-4 h-4 text-cyan-400" />
+                    <span>Admin Console</span>
+                  </NavLink>
+                )}
                 <NavLink
                   to="/my-bookings"
                   onClick={closeMobileMenu}

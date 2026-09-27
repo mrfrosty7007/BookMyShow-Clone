@@ -21,7 +21,9 @@ async function runTest() {
   const tokenMatch = setCookie?.match(/jwt=([^;]+)/);
   const token = tokenMatch ? tokenMatch[1] : null;
   const cookieHeader = setCookie ? setCookie.split(';')[0] : '';
-  console.log(`✓ User registered and authenticated. Cookie/Token extracted: ${token ? 'OK' : 'MISSING'}`);
+  console.log(
+    `✓ User registered and authenticated. Cookie/Token extracted: ${token ? 'OK' : 'MISSING'}`
+  );
 
   // 2. Fetch available shows
   console.log('2. Fetching available shows...');
@@ -129,9 +131,13 @@ async function runTest() {
     headers: { Cookie: cookieB },
   });
   if (crossUserRes.status === 403) {
-    console.log('✓ Cross-user security verified: 403 Forbidden returned when User B attempts to access User A ticket.');
+    console.log(
+      '✓ Cross-user security verified: 403 Forbidden returned when User B attempts to access User A ticket.'
+    );
   } else {
-    throw new Error(`Security failed: User B received status ${crossUserRes.status} instead of 403 Forbidden`);
+    throw new Error(
+      `Security failed: User B received status ${crossUserRes.status} instead of 403 Forbidden`
+    );
   }
 
   console.log('\n--- ALL PHASE 3.3 BACKEND & SECURITY TESTS PASSED SUCCESSFULLY! ---');

@@ -15,6 +15,7 @@ import { AdminRoute } from '../components/AdminRoute.jsx';
 import { AdminLogin } from '../pages/admin/AdminLogin.jsx';
 import { AdminDashboard } from '../pages/admin/AdminDashboard.jsx';
 import { Movies } from '../pages/admin/Movies.jsx';
+import { Theaters } from '../pages/admin/Theaters.jsx';
 
 /**
  * Centralized Application Routes with Protected Customer and Executive Admin Route Integration
@@ -37,7 +38,7 @@ export const AppRoutes = () => {
         <Route index element={<Navigate to="/admin/dashboard" replace />} />
         <Route path="dashboard" element={<AdminDashboard />} />
         <Route path="movies" element={<Movies />} />
-        <Route path="theaters" element={<AdminDashboard />} />
+        <Route path="theaters" element={<Theaters />} />
         <Route path="shows" element={<AdminDashboard />} />
         <Route path="bookings" element={<AdminDashboard />} />
         <Route path="users" element={<AdminDashboard />} />

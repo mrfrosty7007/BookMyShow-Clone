@@ -77,6 +77,25 @@ export const restoreMovie = (id) => apiClient.patch(`/admin/movies/${id}/restore
 export const toggleFeatured = (id) => apiClient.patch(`/admin/movies/${id}/featured`);
 
 /**
+ * Theater & Screen Management API Services - Phase 4.3
+ */
+export const getAdminTheaters = (params = {}) => apiClient.get('/admin/theaters', { params });
+export const createTheater = (theaterData) => apiClient.post('/admin/theaters', theaterData);
+export const updateTheater = (id, theaterData) =>
+  apiClient.put(`/admin/theaters/${id}`, theaterData);
+export const deleteTheater = (id) => apiClient.delete(`/admin/theaters/${id}`);
+export const restoreTheater = (id) => apiClient.patch(`/admin/theaters/${id}/restore`);
+
+export const addScreen = (theaterId, screenData) =>
+  apiClient.post(`/admin/theaters/${theaterId}/screens`, screenData);
+export const updateScreen = (theaterId, screenId, screenData) =>
+  apiClient.put(`/admin/theaters/${theaterId}/screens/${screenId}`, screenData);
+export const deleteScreen = (theaterId, screenId) =>
+  apiClient.delete(`/admin/theaters/${theaterId}/screens/${screenId}`);
+export const duplicateScreen = (theaterId, screenId) =>
+  apiClient.post(`/admin/theaters/${theaterId}/screens/${screenId}/duplicate`);
+
+/**
  * General API methods preserving Phase 0 compatibility
  */
 export const apiService = {

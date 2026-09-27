@@ -35,7 +35,7 @@ const NAV_ITEMS = [
     name: 'Theaters',
     path: '/admin/theaters',
     icon: Building2,
-    badge: 'P4.3',
+    badge: 'Live',
     badgeColor: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
   },
   {

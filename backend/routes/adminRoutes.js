@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { adminLogin, getAdminProfile, getAdminDashboard } from '../controllers/adminController.js';
 import { adminAuth } from '../middleware/adminAuth.js';
 import adminMovieRoutes from './adminMovieRoutes.js';
+import adminTheaterRoutes from './adminTheaterRoutes.js';
 
 const router = Router();
 
@@ -31,5 +32,11 @@ router.get('/dashboard', adminAuth, getAdminDashboard);
  * Mounts /api/admin/movies
  */
 router.use('/movies', adminMovieRoutes);
+
+/**
+ * Theater Management Routes - Phase 4.3
+ * Mounts /api/admin/theaters
+ */
+router.use('/theaters', adminTheaterRoutes);
 
 export default router;

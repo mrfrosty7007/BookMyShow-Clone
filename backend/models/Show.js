@@ -23,6 +23,19 @@ const seatSchema = new mongoose.Schema(
       },
       default: 'available',
     },
+    tier: {
+      type: String,
+      enum: ['Standard', 'Premium', 'VIP', 'Accessible'],
+      default: 'Standard',
+    },
+    priceMultiplier: {
+      type: Number,
+      default: 1.0,
+    },
+    isAccessible: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     _id: false,

@@ -3,6 +3,7 @@ import { adminLogin, getAdminProfile, getAdminDashboard } from '../controllers/a
 import { adminAuth } from '../middleware/adminAuth.js';
 import adminMovieRoutes from './adminMovieRoutes.js';
 import adminTheaterRoutes from './adminTheaterRoutes.js';
+import adminShowRoutes from './adminShowRoutes.js';
 
 const router = Router();
 
@@ -38,5 +39,11 @@ router.use('/movies', adminMovieRoutes);
  * Mounts /api/admin/theaters
  */
 router.use('/theaters', adminTheaterRoutes);
+
+/**
+ * Show Scheduling & Conflict Detection Routes - Phase 4.4
+ * Mounts /api/admin/shows
+ */
+router.use('/shows', adminShowRoutes);
 
 export default router;

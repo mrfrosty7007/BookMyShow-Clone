@@ -33,7 +33,7 @@ export const generateSeatLayout = () => {
  */
 export const getShows = async (req, res) => {
   try {
-    const query = { isActive: true };
+    const query = { isActive: true, status: { $ne: 'cancelled' } };
 
     if (req.query.movie) {
       if (!mongoose.Types.ObjectId.isValid(req.query.movie)) {
@@ -120,10 +120,10 @@ export const getShowById = async (req, res) => {
 
     const show = await Show.findById(id).populate('movie').populate('theater');
 
-    if (!show || !show.isActive) {
+    if (!show || !show.isActive || show.status === 'cancelled') {
       return res.status(404).json({
         success: false,
-        message: 'Show not found',
+        message: 'Show not found or has been cancelled',
       });
     }
 
@@ -376,7 +376,7 @@ export const getShowsByMovie = async (req, res) => {
       });
     }
 
-    const shows = await Show.find({ movie: movieId, isActive: true })
+    const shows = await Show.find({ movie: movieId, isActive: true, status: { $ne: 'cancelled' } })
       .populate('movie')
       .populate('theater')
       .sort({ showTime: 1 });

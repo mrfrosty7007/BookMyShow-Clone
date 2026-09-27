@@ -19,7 +19,11 @@ apiClient.interceptors.response.use(
   (error) => {
     const customMessage =
       error.response?.data?.message || error.message || 'An unexpected network error occurred';
-    return Promise.reject(new Error(customMessage));
+    const err = new Error(customMessage);
+    err.response = error.response;
+    err.data = error.response?.data;
+    err.status = error.response?.status;
+    return Promise.reject(err);
   }
 );
 
@@ -109,6 +113,47 @@ export const checkShowConflict = (conflictData) =>
 export const bulkCreateShows = (bulkData) => apiClient.post('/admin/shows/bulk', bulkData);
 
 /**
+ * Booking Operations & Ticket Validation API Services - Phase 4.5
+ */
+export const getAdminBookings = (params = {}) => apiClient.get('/admin/bookings', { params });
+export const getAdminBookingById = (id) => apiClient.get(`/admin/bookings/${id}`);
+export const checkInBooking = (id, data = {}) =>
+  apiClient.patch(`/admin/bookings/${id}/check-in`, data);
+export const refundBooking = (id, data = {}) =>
+  apiClient.patch(`/admin/bookings/${id}/refund`, data);
+export const validateTicket = (scanData) => apiClient.post('/admin/tickets/validate', scanData);
+export const getTicketScanHistory = (params = {}) =>
+  apiClient.get('/admin/tickets/history', { params });
+export const recoverSeatLocks = () => apiClient.post('/admin/seatlocks/recover');
+
+/**
+ * Executive Analytics & Business Intelligence API Services - Phase 4.6
+ */
+export const getAnalyticsOverview = (params = {}) =>
+  apiClient.get('/admin/analytics/overview', { params });
+export const getAnalyticsRevenue = (params = {}) =>
+  apiClient.get('/admin/analytics/revenue', { params });
+export const getAnalyticsOccupancy = (params = {}) =>
+  apiClient.get('/admin/analytics/occupancy', { params });
+export const getAnalyticsMovies = (params = {}) =>
+  apiClient.get('/admin/analytics/movies', { params });
+export const getAnalyticsTheaters = (params = {}) =>
+  apiClient.get('/admin/analytics/theaters', { params });
+export const getAnalyticsTimeSlots = (params = {}) =>
+  apiClient.get('/admin/analytics/timeslots', { params });
+export const getAnalyticsRefunds = (params = {}) =>
+  apiClient.get('/admin/analytics/refunds', { params });
+export const exportAnalyticsReport = (params = {}) => {
+  if (params.format === 'csv') {
+    return apiClient.get('/admin/analytics/export', {
+      params,
+      responseType: 'blob',
+    });
+  }
+  return apiClient.get('/admin/analytics/export', { params });
+};
+
+/**
  * General API methods preserving Phase 0 compatibility
  */
 export const apiService = {
@@ -122,6 +167,16 @@ export const apiService = {
   createBooking,
   getMyBookings,
   getBooking,
+  getAdminBookings,
+  validateTicket,
+  getAnalyticsOverview,
+  getAnalyticsRevenue,
+  getAnalyticsOccupancy,
+  getAnalyticsMovies,
+  getAnalyticsTheaters,
+  getAnalyticsTimeSlots,
+  getAnalyticsRefunds,
+  exportAnalyticsReport,
 };
 
 export default apiClient;

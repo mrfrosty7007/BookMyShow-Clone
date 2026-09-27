@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { NavLink, Outlet, useNavigate, Link } from 'react-router-dom';
 import {
   LayoutDashboard,
+  BarChart3,
   Film,
   Building2,
   Calendar,
   Ticket,
+  QrCode,
   Users,
   ShieldCheck,
   LogOut,
@@ -23,6 +25,13 @@ const NAV_ITEMS = [
     icon: LayoutDashboard,
     badge: 'Live',
     badgeColor: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+  },
+  {
+    name: 'Analytics',
+    path: '/admin/analytics',
+    icon: BarChart3,
+    badge: 'Executive',
+    badgeColor: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
   },
   {
     name: 'Movies',
@@ -49,8 +58,15 @@ const NAV_ITEMS = [
     name: 'Bookings',
     path: '/admin/bookings',
     icon: Ticket,
-    badge: 'P4.5',
-    badgeColor: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
+    badge: 'Live',
+    badgeColor: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+  },
+  {
+    name: 'QR Scanner',
+    path: '/admin/scanner',
+    icon: QrCode,
+    badge: 'Staff',
+    badgeColor: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
   },
   {
     name: 'Users',

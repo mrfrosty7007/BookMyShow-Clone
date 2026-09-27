@@ -6,7 +6,12 @@ import User from '../models/User.js';
  * Reads JWT token from HTTP-only cookie, verifies it, and attaches the User object to req.user.
  */
 export const protect = async (req, res, next) => {
-  const token = req.cookies?.jwt;
+  let token = req.cookies?.jwt;
+
+  // Also check Authorization header: Bearer <token>
+  if (!token && req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+    token = req.headers.authorization.split(' ')[1];
+  }
 
   if (!token) {
     return res.status(401).json({
@@ -60,4 +65,5 @@ export const authorize = (...roles) => {
   };
 };
 
+export { adminAuth } from './adminAuth.js';
 export default protect;

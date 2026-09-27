@@ -24,10 +24,52 @@ apiClient.interceptors.response.use(
 );
 
 /**
+ * Movie API Services
+ */
+export const getMovies = () => apiClient.get('/movies');
+export const getMovie = (id) => apiClient.get(`/movies/${id}`);
+
+/**
+ * Theater & City API Services
+ */
+export const getCities = () => apiClient.get('/theaters/cities');
+export const getTheaters = (filters = {}) => apiClient.get('/theaters', { params: filters });
+
+/**
+ * Show API Services
+ */
+export const getShowsByMovie = (movieId) => apiClient.get(`/shows/movie/${movieId}`);
+export const getShows = (filters = {}) => apiClient.get('/shows', { params: filters });
+export const getShow = (id) => apiClient.get(`/shows/${id}`);
+
+/**
+ * Booking API Services - Phase 3.3
+ */
+export const createBooking = (bookingData) => apiClient.post('/bookings/create', bookingData);
+export const getMyBookings = () => apiClient.get('/bookings/me');
+export const getBooking = (id) => apiClient.get(`/bookings/${id}`);
+
+/**
+ * Admin API Services - Phase 4.1
+ */
+export const adminLogin = (credentials) => apiClient.post('/admin/login', credentials);
+export const getAdminProfile = () => apiClient.get('/admin/profile');
+export const getAdminDashboard = () => apiClient.get('/admin/dashboard');
+
+/**
  * General API methods preserving Phase 0 compatibility
  */
 export const apiService = {
   getHealth: () => apiClient.get('/health'),
+  getMovies,
+  getMovie,
+  getCities,
+  getShowsByMovie,
+  getShows,
+  getShow,
+  createBooking,
+  getMyBookings,
+  getBooking,
 };
 
 export default apiClient;

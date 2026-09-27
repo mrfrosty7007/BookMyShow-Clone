@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
-import { Film, Menu, X, Radio, ArrowRight, LogOut, User as UserIcon } from 'lucide-react';
-import { useApiHealth } from '../hooks/useApiHealth.js';
+import { Film, Menu, X, Search, LogOut, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth.js';
+import { CitySelector } from './CitySelector.jsx';
 
 /**
- * Reusable, Mobile-Responsive Navigation Bar with Phase 1 Auth Integration
+ * Modern BookMyShow-style Sticky Navigation Bar
  */
-export const Navbar = () => {
+export const Navbar = ({ selectedCity, onSelectCity }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { isConnected, loading: apiLoading } = useApiHealth();
+  const [searchQuery, setSearchQuery] = useState('');
   const { user, logout, loading: authLoading } = useAuth();
 
   const toggleMobileMenu = () => {
@@ -25,116 +25,108 @@ export const Navbar = () => {
     await logout();
   };
 
-  const navLinkClasses = ({ isActive }) =>
-    `px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-      isActive
-        ? 'text-white bg-[#f84464]/20 border border-[#f84464]/40 shadow-sm'
-        : 'text-gray-300 hover:text-white hover:bg-gray-800/50'
-    }`;
-
-  const mobileNavLinkClasses = ({ isActive }) =>
-    `block px-4 py-3 rounded-xl text-base font-medium transition-colors ${
-      isActive
-        ? 'text-white bg-[#f84464]/20 border border-[#f84464]/40'
-        : 'text-gray-300 hover:text-white hover:bg-gray-800/60'
-    }`;
-
   return (
-    <header className="sticky top-0 z-50 w-full backdrop-blur-xl bg-[#0b0f19]/85 border-b border-gray-800/80 transition-colors">
+    <header className="sticky top-0 z-50 w-full backdrop-blur-xl bg-[#0b0f19]/90 border-b border-gray-800/80 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-20">
-          {/* Brand Logo */}
+        <div className="flex items-center justify-between h-16 sm:h-20 gap-4">
+          {/* Left: Brand Logo */}
           <Link
             to="/"
             onClick={closeMobileMenu}
-            className="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#f84464] rounded-lg"
+            className="flex items-center gap-2.5 sm:gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#f84464] rounded-lg flex-shrink-0"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#f84464] to-[#ff6b8b] flex items-center justify-center text-white shadow-lg shadow-[#f84464]/25 group-hover:scale-105 transition-transform duration-200">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-[#f84464] to-[#ff6b8b] flex items-center justify-center text-white shadow-lg shadow-[#f84464]/25 group-hover:scale-105 transition-transform duration-200">
               <Film className="w-5 h-5" />
             </div>
             <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                <span className="text-xl sm:text-2xl font-black tracking-tight text-white font-heading">
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <span className="text-xl sm:text-2xl font-black tracking-tight text-white">
                   book<span className="text-[#f84464]">my</span>show
                 </span>
-                <span className="text-[10px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-gray-800 text-gray-400 border border-gray-700/60">
+                <span className="text-[9px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-gray-800 text-gray-400 border border-gray-700/60 hidden sm:inline-block">
                   Clone
                 </span>
               </div>
-              <span className="text-[10px] tracking-wider text-gray-400 -mt-1 font-sans">
-                Phase 1 • Auth Active
-              </span>
             </div>
           </Link>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-1.5 lg:gap-2">
-            <NavLink to="/" className={navLinkClasses} end>
-              Home
+          {/* Center: Search Bar (Desktop UI Only) */}
+          <div className="hidden md:flex flex-1 max-w-md mx-4">
+            <div className="relative w-full">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                <Search className="w-4 h-4" />
+              </div>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search for Movies, Theaters, Events..."
+                className="w-full pl-10 pr-4 py-2 text-sm rounded-xl bg-gray-900/90 border border-gray-800 text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#f84464] focus:ring-1 focus:ring-[#f84464] transition-all"
+              />
+            </div>
+          </div>
+
+          {/* Right Actions: City Selector & Auth CTA */}
+          <div className="hidden md:flex items-center gap-3.5">
+            {/* City Selector */}
+            <CitySelector selectedCity={selectedCity} onSelectCity={onSelectCity} />
+
+            {/* Navigation links */}
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                `px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                  isActive ? 'text-[#f84464]' : 'text-gray-300 hover:text-white'
+                }`
+              }
+              end
+            >
+              Movies
             </NavLink>
 
-            {user ? (
-              <NavLink to="/profile" className={navLinkClasses}>
-                Profile
+            {user && (
+              <NavLink
+                to="/my-bookings"
+                className={({ isActive }) =>
+                  `px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                    isActive ? 'text-[#f84464]' : 'text-gray-300 hover:text-white'
+                  }`
+                }
+              >
+                My Bookings
               </NavLink>
-            ) : (
-              <>
-                <NavLink to="/login" className={navLinkClasses}>
-                  Login
-                </NavLink>
-                <NavLink to="/register" className={navLinkClasses}>
-                  Register
-                </NavLink>
-              </>
             )}
-          </nav>
 
-          {/* Desktop Right Actions: API Status & User Session / Auth CTA */}
-          <div className="hidden md:flex items-center gap-4">
-            {/* Live API Status indicator */}
-            <div
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border ${
-                apiLoading
-                  ? 'bg-amber-500/10 text-amber-300 border-amber-500/20'
-                  : isConnected
-                    ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
-                    : 'bg-rose-500/10 text-rose-300 border-rose-500/20'
-              }`}
-              title={isConnected ? 'Backend & MongoDB Atlas online' : 'Backend offline'}
-            >
-              <Radio
-                className={`w-3.5 h-3.5 ${
-                  apiLoading
-                    ? 'animate-spin text-amber-400'
-                    : isConnected
-                      ? 'animate-pulse text-emerald-400'
-                      : 'text-rose-400'
-                }`}
-              />
-              <span>{apiLoading ? 'Checking...' : isConnected ? 'API Online' : 'API Offline'}</span>
-            </div>
+            {user?.role === 'admin' && (
+              <NavLink
+                to="/admin/dashboard"
+                className="px-3 py-1.5 rounded-lg text-xs font-bold text-cyan-300 bg-cyan-950/60 border border-cyan-500/40 hover:bg-cyan-900/60 transition-all flex items-center gap-1.5 shadow-sm shadow-cyan-500/20"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Admin Console</span>
+              </NavLink>
+            )}
 
-            {/* Authenticated vs Guest Actions */}
+            {/* Auth Button or User profile */}
             {authLoading ? (
-              <div className="w-20 h-8 rounded-xl bg-gray-800/60 animate-pulse" />
+              <div className="w-20 h-9 rounded-xl bg-gray-800/60 animate-pulse" />
             ) : user ? (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <Link
                   to="/profile"
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gray-800/80 hover:bg-gray-800 border border-gray-700/80 text-gray-200 text-sm font-semibold transition-all group"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gray-800/80 hover:bg-gray-800 border border-gray-700/80 text-gray-200 text-sm font-semibold transition-all"
                 >
                   <div className="w-6 h-6 rounded-lg bg-[#f84464] text-white flex items-center justify-center text-xs font-bold">
                     {user.name?.charAt(0).toUpperCase() || 'U'}
                   </div>
-                  <span className="max-w-[120px] truncate">{user.name}</span>
+                  <span className="max-w-[100px] truncate">{user.name}</span>
                 </Link>
 
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="p-2 rounded-xl text-gray-400 hover:text-rose-400 hover:bg-gray-800/80 border border-gray-800 transition-colors"
+                  className="p-2 rounded-xl text-gray-400 hover:text-rose-400 hover:bg-gray-800 border border-gray-800 transition-colors"
                   title="Sign Out"
-                  aria-label="Sign Out"
                 >
                   <LogOut className="w-4 h-4" />
                 </button>
@@ -142,85 +134,122 @@ export const Navbar = () => {
             ) : (
               <Link
                 to="/login"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#f84464] to-[#e03150] text-white text-sm font-semibold hover:opacity-95 shadow-md shadow-[#f84464]/20 hover:shadow-lg hover:shadow-[#f84464]/30 transition-all duration-200 group"
+                className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#f84464] to-[#e03150] text-white text-sm font-semibold hover:opacity-95 shadow-md shadow-[#f84464]/20 transition-all duration-200"
               >
-                <span>Sign In</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                Sign In
               </Link>
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="flex md:hidden items-center gap-3">
-            <span
-              className={`w-2.5 h-2.5 rounded-full ${
-                apiLoading
-                  ? 'bg-amber-400 animate-pulse'
-                  : isConnected
-                    ? 'bg-emerald-400 shadow-sm shadow-emerald-400/50'
-                    : 'bg-rose-400'
-              }`}
-              title={isConnected ? 'API Online' : 'API Offline'}
-            />
+          {/* Mobile Right: City Selector & Menu Toggle */}
+          <div className="flex md:hidden items-center gap-2">
+            <CitySelector selectedCity={selectedCity} onSelectCity={onSelectCity} />
 
             <button
               type="button"
               onClick={toggleMobileMenu}
               aria-label="Toggle navigation menu"
-              aria-expanded={mobileMenuOpen}
-              className="p-2 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800/80 border border-gray-800 focus:outline-none focus:ring-2 focus:ring-[#f84464]"
+              className="p-2 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 border border-gray-800 focus:outline-none"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
+          </div>
+        </div>
+
+        {/* Mobile Search Bar */}
+        <div className="md:hidden pb-3">
+          <div className="relative w-full">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+              <Search className="w-4 h-4" />
+            </div>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search movies..."
+              className="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl bg-gray-900 border border-gray-800 text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#f84464]"
+            />
           </div>
         </div>
       </div>
 
       {/* Mobile Dropdown Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-gray-800/80 bg-[#0b0f19]/95 backdrop-blur-2xl px-4 pt-3 pb-6 space-y-3 transition-all">
+        <div className="md:hidden border-b border-gray-800/80 bg-[#0b0f19]/95 backdrop-blur-2xl px-4 pt-2 pb-5 space-y-3">
           <nav className="flex flex-col space-y-1">
-            <NavLink to="/" onClick={closeMobileMenu} className={mobileNavLinkClasses} end>
-              Home
+            <NavLink
+              to="/"
+              onClick={closeMobileMenu}
+              className="px-3 py-2 rounded-lg text-sm font-medium text-gray-200 hover:bg-gray-800"
+            >
+              Explore Movies
             </NavLink>
 
             {user ? (
-              <NavLink to="/profile" onClick={closeMobileMenu} className={mobileNavLinkClasses}>
-                Profile ({user.name})
-              </NavLink>
+              <>
+                {user.role === 'admin' && (
+                  <NavLink
+                    to="/admin/dashboard"
+                    onClick={closeMobileMenu}
+                    className="px-3 py-2 rounded-lg text-sm font-bold text-cyan-300 bg-cyan-950/60 border border-cyan-500/40 flex items-center gap-2"
+                  >
+                    <ShieldCheck className="w-4 h-4 text-cyan-400" />
+                    <span>Admin Console</span>
+                  </NavLink>
+                )}
+                <NavLink
+                  to="/my-bookings"
+                  onClick={closeMobileMenu}
+                  className="px-3 py-2 rounded-lg text-sm font-medium text-gray-200 hover:bg-gray-800"
+                >
+                  My Bookings
+                </NavLink>
+                <NavLink
+                  to="/profile"
+                  onClick={closeMobileMenu}
+                  className="px-3 py-2 rounded-lg text-sm font-medium text-gray-200 hover:bg-gray-800"
+                >
+                  Profile ({user.name})
+                </NavLink>
+              </>
             ) : (
               <>
-                <NavLink to="/login" onClick={closeMobileMenu} className={mobileNavLinkClasses}>
+                <NavLink
+                  to="/login"
+                  onClick={closeMobileMenu}
+                  className="px-3 py-2 rounded-lg text-sm font-medium text-gray-200 hover:bg-gray-800"
+                >
                   Login
                 </NavLink>
-                <NavLink to="/register" onClick={closeMobileMenu} className={mobileNavLinkClasses}>
+                <NavLink
+                  to="/register"
+                  onClick={closeMobileMenu}
+                  className="px-3 py-2 rounded-lg text-sm font-medium text-gray-200 hover:bg-gray-800"
+                >
                   Register
                 </NavLink>
               </>
             )}
           </nav>
 
-          <div className="pt-3 border-t border-gray-800/80 flex flex-col gap-3">
+          <div className="pt-2 border-t border-gray-800 flex justify-between items-center">
             {user ? (
-              <div className="flex items-center justify-between px-2">
-                <div className="flex items-center gap-2">
-                  <UserIcon className="w-4 h-4 text-[#f84464]" />
-                  <span className="text-sm font-semibold text-gray-200">{user.name}</span>
-                </div>
+              <div className="flex items-center justify-between w-full">
+                <span className="text-xs text-gray-400">Logged in as {user.name}</span>
                 <button
                   type="button"
                   onClick={handleLogout}
                   className="text-xs text-rose-400 hover:underline flex items-center gap-1"
                 >
-                  <LogOut className="w-3.5 h-3.5" />
-                  <span>Logout</span>
+                  <LogOut className="w-3 h-3" />
+                  Logout
                 </button>
               </div>
             ) : (
               <Link
                 to="/login"
                 onClick={closeMobileMenu}
-                className="w-full text-center py-2.5 rounded-xl bg-gradient-to-r from-[#f84464] to-[#e03150] text-white text-sm font-semibold shadow-md shadow-[#f84464]/20"
+                className="w-full text-center py-2 rounded-xl bg-gradient-to-r from-[#f84464] to-[#e03150] text-white text-xs font-bold"
               >
                 Sign In
               </Link>

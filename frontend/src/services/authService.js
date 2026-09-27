@@ -23,6 +23,15 @@ export const authService = {
   },
 
   /**
+   * Authenticate administrator with email & password
+   * @param {{ email: string, password: string }} credentials
+   * @returns {Promise<{ status: string, message: string, token: string, user: object }>}
+   */
+  adminLogin: (credentials) => {
+    return apiClient.post('/admin/login', credentials);
+  },
+
+  /**
    * Log out and clear the HTTP-only cookie
    * @returns {Promise<{ status: string, message: string }>}
    */

@@ -94,6 +94,24 @@ export const AuthProvider = ({ children }) => {
   };
 
   /**
+   * Log in administrator with credentials
+   */
+  const adminLogin = async (credentials) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await authService.adminLogin(credentials);
+      setUser(response.user);
+      return response;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /**
    * Log out user and clear cookie
    */
   const logout = async () => {
@@ -111,7 +129,9 @@ export const AuthProvider = ({ children }) => {
     loading,
     error,
     isAuthenticated: Boolean(user),
+    isAdmin: user?.role === 'admin',
     login,
+    adminLogin,
     register,
     logout,
     refreshSession,

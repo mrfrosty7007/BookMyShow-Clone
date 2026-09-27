@@ -1,0 +1,120 @@
+{
+  "info": {
+    "_postman_id": "7f8b9e62-4318-4b21-9951-419b48c3b7a1",
+    "name": "BookMyShow Clone - Authentication API",
+    "description": "Postman collection for testing the BookMyShow Clone MERN Authentication API.\n\n### Authentication Method:\nEndpoints use HTTP-only JWT cookies (`jwt`). When logging in or registering, the backend returns a `Set-Cookie: jwt=...` header. Postman automatically manages cookies in its Cookie Jar for localhost:5000.\n\n### Security Features:\n- Rate Limiting: 5 attempts per 15-minute window on `POST /api/auth/login`\n- MongoDB Query Sanitization on all incoming requests\n- HTTP Security Headers via Helmet\n- Cross-Origin Resource Sharing (CORS) restricted to frontend origins",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Register",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"testuser@example.com\",\n  \"password\": \"Password123!\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "register"
+          ]
+        },
+        "description": "Registers a new user account and sets the HTTP-only `jwt` cookie."
+      },
+      "response": []
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"testuser@example.com\",\n  \"password\": \"Password123!\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        },
+        "description": "Authenticates user credentials and issues the HTTP-only `jwt` cookie.\n\nNote: Rate-limited to 5 requests per 15 minutes per IP address."
+      },
+      "response": []
+    },
+    {
+      "name": "Current User (Me)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/me",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "me"
+          ]
+        },
+        "description": "Retrieves the currently authenticated user's profile using the session cookie stored in Postman."
+      },
+      "response": []
+    },
+    {
+      "name": "Logout",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/logout",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "logout"
+          ]
+        },
+        "description": "Clears the HTTP-only `jwt` cookie, terminating the session."
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    }
+  ]
+}

@@ -7,6 +7,7 @@ import {
   getCurrentUser,
 } from '../controllers/authController.js';
 import { protect } from '../middleware/authMiddleware.js';
+import { loginRateLimiter } from '../middleware/rateLimiter.js';
 
 const router = express.Router();
 
@@ -52,7 +53,7 @@ router.post('/register', registerValidation, registerUser);
  * @desc    Authenticate user and set JWT cookie
  * @access  Public
  */
-router.post('/login', loginValidation, loginUser);
+router.post('/login', loginRateLimiter, loginValidation, loginUser);
 
 /**
  * @route   POST /api/auth/logout

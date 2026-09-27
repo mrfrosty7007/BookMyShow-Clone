@@ -20,26 +20,35 @@ const PORT = process.env.PORT || 5000;
  * Start the Express server and connect to MongoDB
  */
 const startServer = async () => {
-  // Wrap Express app with HTTP server for Socket.IO integration
-  const httpServer = http.createServer(app);
+  try {
+    // Connect to MongoDB before accepting incoming HTTP requests
+    const conn = await connectDB();
+    if (!conn && process.env.NODE_ENV === 'production') {
+      console.error('[Server] Database connection failed in production.');
+      process.exit(1);
+    }
 
-  // Initialize Socket.IO with real-time seat locking
-  initSocket(httpServer);
+    // Wrap Express app with HTTP server for Socket.IO integration
+    const httpServer = http.createServer(app);
 
-  const server = httpServer.listen(PORT, () => {
-    console.log(`[Server] BookMyShow Clone API running on port ${PORT}`);
-    console.log(`[Server] Health endpoint: http://localhost:${PORT}/api/health`);
-    console.log(`[Server] Real-time Socket.IO initialized on port ${PORT}`);
-  });
+    // Initialize Socket.IO with real-time seat locking
+    initSocket(httpServer);
 
-  // Connect to MongoDB asynchronously
-  await connectDB();
+    const server = httpServer.listen(PORT, () => {
+      console.log(`[Server] BookMyShow Clone API running on port ${PORT}`);
+      console.log(`[Server] Health endpoint: http://localhost:${PORT}/api/health`);
+      console.log(`[Server] Real-time Socket.IO initialized on port ${PORT}`);
+    });
 
-  // Handle unhandled rejections gracefully
-  process.on('unhandledRejection', (err) => {
-    console.error(`[Server] Unhandled Rejection: ${err.message}`);
-    server.close(() => process.exit(1));
-  });
+    // Handle unhandled rejections gracefully
+    process.on('unhandledRejection', (err) => {
+      console.error(`[Server] Unhandled Rejection: ${err.message}`);
+      server.close(() => process.exit(1));
+    });
+  } catch (error) {
+    console.error(`[Server] Failed to start server: ${error.message}`);
+    process.exit(1);
+  }
 };
 
 startServer();

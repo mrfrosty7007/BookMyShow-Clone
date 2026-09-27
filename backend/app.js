@@ -1,23 +1,40 @@
 import express from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import apiRoutes from './routes/index.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
 
-// CORS configuration
+// Allowed origins for CORS with credentials
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'http://localhost:3000',
+  process.env.CLIENT_URL,
+].filter(Boolean);
+
+// CORS configuration (credentials: true requires specific origins, not wildcard)
 const corsOptions = {
-  origin: process.env.CLIENT_URL || '*',
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`Origin ${origin} not allowed by CORS`));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+  exposedHeaders: ['Set-Cookie'],
 };
 app.use(cors(corsOptions));
 
-// Body parsing middlewares
+// Body and Cookie parsing middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Centralized API route registration
 app.use('/api', apiRoutes);
@@ -30,6 +47,12 @@ app.get('/', (_req, res) => {
     version: '1.0.0',
     endpoints: {
       health: '/api/health',
+      auth: {
+        register: 'POST /api/auth/register',
+        login: 'POST /api/auth/login',
+        logout: 'POST /api/auth/logout',
+        me: 'GET /api/auth/me',
+      },
     },
   });
 });

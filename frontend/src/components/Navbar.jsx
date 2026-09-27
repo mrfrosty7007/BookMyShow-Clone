@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
-import { Film, Menu, X, Radio, ArrowRight } from 'lucide-react';
+import { Film, Menu, X, Radio, ArrowRight, LogOut, User as UserIcon } from 'lucide-react';
 import { useApiHealth } from '../hooks/useApiHealth.js';
+import { useAuth } from '../hooks/useAuth.js';
 
 /**
- * Reusable, Mobile-Responsive Navigation Bar
+ * Reusable, Mobile-Responsive Navigation Bar with Phase 1 Auth Integration
  */
 export const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { isConnected, loading } = useApiHealth();
+  const { isConnected, loading: apiLoading } = useApiHealth();
+  const { user, logout, loading: authLoading } = useAuth();
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen((prev) => !prev);
@@ -16,6 +18,11 @@ export const Navbar = () => {
 
   const closeMobileMenu = () => {
     setMobileMenuOpen(false);
+  };
+
+  const handleLogout = async () => {
+    closeMobileMenu();
+    await logout();
   };
 
   const navLinkClasses = ({ isActive }) =>
@@ -55,7 +62,7 @@ export const Navbar = () => {
                 </span>
               </div>
               <span className="text-[10px] tracking-wider text-gray-400 -mt-1 font-sans">
-                Phase 0 • Foundation
+                Phase 1 • Auth Active
               </span>
             </div>
           </Link>
@@ -65,62 +72,89 @@ export const Navbar = () => {
             <NavLink to="/" className={navLinkClasses} end>
               Home
             </NavLink>
-            <NavLink to="/login" className={navLinkClasses}>
-              Login
-            </NavLink>
-            <NavLink to="/register" className={navLinkClasses}>
-              Register
-            </NavLink>
+
+            {user ? (
+              <NavLink to="/profile" className={navLinkClasses}>
+                Profile
+              </NavLink>
+            ) : (
+              <>
+                <NavLink to="/login" className={navLinkClasses}>
+                  Login
+                </NavLink>
+                <NavLink to="/register" className={navLinkClasses}>
+                  Register
+                </NavLink>
+              </>
+            )}
           </nav>
 
-          {/* Desktop Right Actions: API Status & CTA */}
+          {/* Desktop Right Actions: API Status & User Session / Auth CTA */}
           <div className="hidden md:flex items-center gap-4">
             {/* Live API Status indicator */}
             <div
               className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border ${
-                loading
+                apiLoading
                   ? 'bg-amber-500/10 text-amber-300 border-amber-500/20'
                   : isConnected
                     ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
                     : 'bg-rose-500/10 text-rose-300 border-rose-500/20'
               }`}
-              title={
-                loading
-                  ? 'Checking backend connection...'
-                  : isConnected
-                    ? 'Backend connected and responding at /api/health'
-                    : 'Backend offline or unreachable'
-              }
+              title={isConnected ? 'Backend & MongoDB Atlas online' : 'Backend offline'}
             >
               <Radio
                 className={`w-3.5 h-3.5 ${
-                  loading
+                  apiLoading
                     ? 'animate-spin text-amber-400'
                     : isConnected
                       ? 'animate-pulse text-emerald-400'
                       : 'text-rose-400'
                 }`}
               />
-              <span>
-                {loading ? 'Checking API...' : isConnected ? 'API Online' : 'API Offline'}
-              </span>
+              <span>{apiLoading ? 'Checking...' : isConnected ? 'API Online' : 'API Offline'}</span>
             </div>
 
-            <Link
-              to="/login"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#f84464] to-[#e03150] text-white text-sm font-semibold hover:opacity-95 shadow-md shadow-[#f84464]/20 hover:shadow-lg hover:shadow-[#f84464]/30 transition-all duration-200 group"
-            >
-              <span>Get Started</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-            </Link>
+            {/* Authenticated vs Guest Actions */}
+            {authLoading ? (
+              <div className="w-20 h-8 rounded-xl bg-gray-800/60 animate-pulse" />
+            ) : user ? (
+              <div className="flex items-center gap-3">
+                <Link
+                  to="/profile"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gray-800/80 hover:bg-gray-800 border border-gray-700/80 text-gray-200 text-sm font-semibold transition-all group"
+                >
+                  <div className="w-6 h-6 rounded-lg bg-[#f84464] text-white flex items-center justify-center text-xs font-bold">
+                    {user.name?.charAt(0).toUpperCase() || 'U'}
+                  </div>
+                  <span className="max-w-[120px] truncate">{user.name}</span>
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="p-2 rounded-xl text-gray-400 hover:text-rose-400 hover:bg-gray-800/80 border border-gray-800 transition-colors"
+                  title="Sign Out"
+                  aria-label="Sign Out"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#f84464] to-[#e03150] text-white text-sm font-semibold hover:opacity-95 shadow-md shadow-[#f84464]/20 hover:shadow-lg hover:shadow-[#f84464]/30 transition-all duration-200 group"
+              >
+                <span>Sign In</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
           <div className="flex md:hidden items-center gap-3">
-            {/* Minimal Status Dot */}
             <span
               className={`w-2.5 h-2.5 rounded-full ${
-                loading
+                apiLoading
                   ? 'bg-amber-400 animate-pulse'
                   : isConnected
                     ? 'bg-emerald-400 shadow-sm shadow-emerald-400/50'
@@ -149,38 +183,48 @@ export const Navbar = () => {
             <NavLink to="/" onClick={closeMobileMenu} className={mobileNavLinkClasses} end>
               Home
             </NavLink>
-            <NavLink to="/login" onClick={closeMobileMenu} className={mobileNavLinkClasses}>
-              Login
-            </NavLink>
-            <NavLink to="/register" onClick={closeMobileMenu} className={mobileNavLinkClasses}>
-              Register
-            </NavLink>
+
+            {user ? (
+              <NavLink to="/profile" onClick={closeMobileMenu} className={mobileNavLinkClasses}>
+                Profile ({user.name})
+              </NavLink>
+            ) : (
+              <>
+                <NavLink to="/login" onClick={closeMobileMenu} className={mobileNavLinkClasses}>
+                  Login
+                </NavLink>
+                <NavLink to="/register" onClick={closeMobileMenu} className={mobileNavLinkClasses}>
+                  Register
+                </NavLink>
+              </>
+            )}
           </nav>
 
           <div className="pt-3 border-t border-gray-800/80 flex flex-col gap-3">
-            <div className="flex items-center justify-between text-xs px-2 text-gray-400">
-              <span>Backend Status</span>
-              <span
-                className={`font-semibold flex items-center gap-1.5 ${
-                  isConnected ? 'text-emerald-400' : 'text-rose-400'
-                }`}
+            {user ? (
+              <div className="flex items-center justify-between px-2">
+                <div className="flex items-center gap-2">
+                  <UserIcon className="w-4 h-4 text-[#f84464]" />
+                  <span className="text-sm font-semibold text-gray-200">{user.name}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="text-xs text-rose-400 hover:underline flex items-center gap-1"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Logout</span>
+                </button>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                onClick={closeMobileMenu}
+                className="w-full text-center py-2.5 rounded-xl bg-gradient-to-r from-[#f84464] to-[#e03150] text-white text-sm font-semibold shadow-md shadow-[#f84464]/20"
               >
-                <span
-                  className={`w-2 h-2 rounded-full ${
-                    isConnected ? 'bg-emerald-400' : 'bg-rose-400'
-                  }`}
-                />
-                {isConnected ? 'Connected (/api/health)' : 'Offline'}
-              </span>
-            </div>
-
-            <Link
-              to="/login"
-              onClick={closeMobileMenu}
-              className="w-full text-center py-2.5 rounded-xl bg-gradient-to-r from-[#f84464] to-[#e03150] text-white text-sm font-semibold shadow-md shadow-[#f84464]/20"
-            >
-              Sign In to Preview
-            </Link>
+                Sign In
+              </Link>
+            )}
           </div>
         </div>
       )}

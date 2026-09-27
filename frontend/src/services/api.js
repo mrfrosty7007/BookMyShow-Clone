@@ -1,49 +1,33 @@
+import axios from 'axios';
 import { APP_CONFIG } from '../utils/constants.js';
 
 /**
- * Base fetch wrapper with error handling
+ * Centralized Axios instance with HTTP-only cookie support
  */
-const request = async (endpoint, options = {}) => {
-  const url = `${APP_CONFIG.apiBaseUrl}${endpoint}`;
-
-  const defaultHeaders = {
+export const apiClient = axios.create({
+  baseURL: APP_CONFIG.apiBaseUrl,
+  withCredentials: true, // Crucial for sending and receiving HTTP-only cookies
+  headers: {
     'Content-Type': 'application/json',
-  };
+  },
+  timeout: 10000,
+});
 
-  const config = {
-    ...options,
-    headers: {
-      ...defaultHeaders,
-      ...options.headers,
-    },
-  };
-
-  try {
-    const response = await fetch(url, config);
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || `HTTP error! status: ${response.status}`);
-    }
-
-    return data;
-  } catch (error) {
-    console.error(`[API Error] Request failed for ${url}:`, error.message);
-    throw error;
+// Response interceptor for consistent error extraction
+apiClient.interceptors.response.use(
+  (response) => response.data,
+  (error) => {
+    const customMessage =
+      error.response?.data?.message || error.message || 'An unexpected network error occurred';
+    return Promise.reject(new Error(customMessage));
   }
-};
+);
 
 /**
- * API Service methods
+ * General API methods preserving Phase 0 compatibility
  */
 export const apiService = {
-  /**
-   * Health check query
-   * @returns {Promise<{ status: string, message: string }>}
-   */
-  getHealth: async () => {
-    return await request('/health');
-  },
+  getHealth: () => apiClient.get('/health'),
 };
 
-export default apiService;
+export default apiClient;

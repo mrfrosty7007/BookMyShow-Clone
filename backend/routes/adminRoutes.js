@@ -6,6 +6,7 @@ import adminTheaterRoutes from './adminTheaterRoutes.js';
 import adminShowRoutes from './adminShowRoutes.js';
 import adminBookingRoutes from './adminBookingRoutes.js';
 import ticketValidationRoutes from './ticketValidationRoutes.js';
+import analyticsRoutes from './analyticsRoutes.js';
 import { recoverSeatLocksEndpoint } from '../controllers/bookingAdminController.js';
 
 const router = Router();
@@ -66,5 +67,11 @@ router.use('/tickets', ticketValidationRoutes);
  * Mounts /api/admin/seatlocks/recover
  */
 router.post('/seatlocks/recover', adminAuth, recoverSeatLocksEndpoint);
+
+/**
+ * Executive Analytics & Business Intelligence - Phase 4.6
+ * Mounts /api/admin/analytics
+ */
+router.use('/analytics', analyticsRoutes);
 
 export default router;

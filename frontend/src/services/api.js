@@ -127,6 +127,33 @@ export const getTicketScanHistory = (params = {}) =>
 export const recoverSeatLocks = () => apiClient.post('/admin/seatlocks/recover');
 
 /**
+ * Executive Analytics & Business Intelligence API Services - Phase 4.6
+ */
+export const getAnalyticsOverview = (params = {}) =>
+  apiClient.get('/admin/analytics/overview', { params });
+export const getAnalyticsRevenue = (params = {}) =>
+  apiClient.get('/admin/analytics/revenue', { params });
+export const getAnalyticsOccupancy = (params = {}) =>
+  apiClient.get('/admin/analytics/occupancy', { params });
+export const getAnalyticsMovies = (params = {}) =>
+  apiClient.get('/admin/analytics/movies', { params });
+export const getAnalyticsTheaters = (params = {}) =>
+  apiClient.get('/admin/analytics/theaters', { params });
+export const getAnalyticsTimeSlots = (params = {}) =>
+  apiClient.get('/admin/analytics/timeslots', { params });
+export const getAnalyticsRefunds = (params = {}) =>
+  apiClient.get('/admin/analytics/refunds', { params });
+export const exportAnalyticsReport = (params = {}) => {
+  if (params.format === 'csv') {
+    return apiClient.get('/admin/analytics/export', {
+      params,
+      responseType: 'blob',
+    });
+  }
+  return apiClient.get('/admin/analytics/export', { params });
+};
+
+/**
  * General API methods preserving Phase 0 compatibility
  */
 export const apiService = {
@@ -142,6 +169,14 @@ export const apiService = {
   getBooking,
   getAdminBookings,
   validateTicket,
+  getAnalyticsOverview,
+  getAnalyticsRevenue,
+  getAnalyticsOccupancy,
+  getAnalyticsMovies,
+  getAnalyticsTheaters,
+  getAnalyticsTimeSlots,
+  getAnalyticsRefunds,
+  exportAnalyticsReport,
 };
 
 export default apiClient;

@@ -24,7 +24,7 @@ export const connectDB = async () => {
 
   try {
     const conn = await mongoose.connect(mongoURI, {
-      serverSelectionTimeoutMS: 2500, // Quick timeout for local resilience
+      serverSelectionTimeoutMS: 5000, // 5s timeout for cloud Atlas resilience
     });
 
     console.log(`[MongoDB] Connected successfully to host: ${conn.connection.host}`);

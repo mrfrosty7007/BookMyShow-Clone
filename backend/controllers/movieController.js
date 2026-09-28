@@ -8,7 +8,7 @@ import Movie from '../models/Movie.js';
  */
 export const getMovies = async (_req, res) => {
   try {
-    const movies = await Movie.find({ isActive: true }).sort({ releaseDate: -1 });
+    const movies = await Movie.find({ isActive: true }).sort({ releaseDate: -1 }).lean();
 
     return res.status(200).json({
       success: true,
@@ -39,7 +39,7 @@ export const getMovieById = async (req, res) => {
       });
     }
 
-    const movie = await Movie.findById(id);
+    const movie = await Movie.findById(id).lean();
 
     if (!movie || !movie.isActive) {
       return res.status(404).json({

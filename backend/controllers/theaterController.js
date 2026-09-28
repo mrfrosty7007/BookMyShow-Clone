@@ -2,6 +2,16 @@ import mongoose from 'mongoose';
 import Theater from '../models/Theater.js';
 
 /**
+ * Helper to safely escape special regular expression characters from user input
+ * @param {string} text - User input string to escape
+ * @returns {string} - Escaped string safe for RegExp compilation
+ */
+const escapeRegex = (text) => {
+  if (typeof text !== 'string') return '';
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
+
+/**
  * @desc    Get all active theaters with optional city filtering
  * @route   GET /api/theaters?city=Bengaluru
  * @access  Public
@@ -10,11 +20,12 @@ export const getTheaters = async (req, res) => {
   try {
     const query = { isActive: true };
 
-    if (req.query.city) {
-      query.city = { $regex: new RegExp(`^${req.query.city.trim()}$`, 'i') };
+    if (req.query.city && req.query.city.trim()) {
+      const sanitizedCity = escapeRegex(req.query.city.trim());
+      query.city = { $regex: new RegExp(`^${sanitizedCity}$`, 'i') };
     }
 
-    const theaters = await Theater.find(query).sort({ name: 1 });
+    const theaters = await Theater.find(query).sort({ name: 1 }).lean();
 
     return res.status(200).json({
       success: true,
@@ -67,7 +78,7 @@ export const getTheaterById = async (req, res) => {
       });
     }
 
-    const theater = await Theater.findById(id);
+    const theater = await Theater.findById(id).lean();
 
     if (!theater || !theater.isActive) {
       return res.status(404).json({

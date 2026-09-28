@@ -5,6 +5,16 @@ import Theater from '../models/Theater.js';
 import SeatLock from '../models/SeatLock.js';
 
 /**
+ * Helper to safely escape special regular expression characters from user input
+ * @param {string} text - User input string to escape
+ * @returns {string} - Escaped string safe for RegExp compilation
+ */
+const escapeRegex = (text) => {
+  if (typeof text !== 'string') return '';
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
+
+/**
  * Generates standard 100-seat theater layout (Rows A–J, Seats 1–10)
  * @returns {Array<{seatNumber: string, row: string, status: string}>}
  */
@@ -49,11 +59,14 @@ export const getShows = async (req, res) => {
       query.theater = req.query.theater;
     }
 
-    if (req.query.city) {
+    if (req.query.city && req.query.city.trim()) {
+      const sanitizedCity = escapeRegex(req.query.city.trim());
       const theatersInCity = await Theater.find({
-        city: { $regex: new RegExp(`^${req.query.city.trim()}$`, 'i') },
+        city: { $regex: new RegExp(`^${sanitizedCity}$`, 'i') },
         isActive: true,
-      }).select('_id');
+      })
+        .select('_id')
+        .lean();
 
       const theaterIds = theatersInCity.map((t) => t._id);
 
@@ -87,7 +100,8 @@ export const getShows = async (req, res) => {
     const shows = await Show.find(query)
       .populate('movie')
       .populate('theater')
-      .sort({ showTime: 1 });
+      .sort({ showTime: 1 })
+      .lean();
 
     return res.status(200).json({
       success: true,
@@ -118,7 +132,7 @@ export const getShowById = async (req, res) => {
       });
     }
 
-    const show = await Show.findById(id).populate('movie').populate('theater');
+    const show = await Show.findById(id).populate('movie').populate('theater').lean();
 
     if (!show || !show.isActive || show.status === 'cancelled') {
       return res.status(404).json({
@@ -134,7 +148,7 @@ export const getShowById = async (req, res) => {
       hour12: true,
     });
     const date = showDate.toISOString().split('T')[0];
-    const showObj = show.toObject();
+    const showObj = show;
 
     // Standardized 10x12 auditorium categorized seat layout for Phase 3.1
     const seatLayout = {
@@ -170,7 +184,7 @@ export const getShowById = async (req, res) => {
     const activeLocks = await SeatLock.find({
       showId: id,
       expiresAt: { $gt: new Date() },
-    });
+    }).lean();
 
     const lockedSeats = activeLocks.map((lock) => ({
       seatNumber: lock.seatNumber,
@@ -379,7 +393,8 @@ export const getShowsByMovie = async (req, res) => {
     const shows = await Show.find({ movie: movieId, isActive: true, status: { $ne: 'cancelled' } })
       .populate('movie')
       .populate('theater')
-      .sort({ showTime: 1 });
+      .sort({ showTime: 1 })
+      .lean();
 
     return res.status(200).json({
       success: true,

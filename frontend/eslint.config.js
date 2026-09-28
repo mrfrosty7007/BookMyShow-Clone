@@ -35,6 +35,8 @@ export default [
         FormData: 'readonly',
         Blob: 'readonly',
         File: 'readonly',
+        localStorage: 'readonly',
+        sessionStorage: 'readonly',
       },
     },
     settings: {

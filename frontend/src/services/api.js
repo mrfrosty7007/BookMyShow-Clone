@@ -13,10 +13,41 @@ export const apiClient = axios.create({
   timeout: 10000,
 });
 
-// Response interceptor for consistent error extraction
+// Request interceptor for automatically attaching Bearer token from localStorage
+apiClient.interceptors.request.use(
+  (config) => {
+    try {
+      const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+      if (token) {
+        config.headers = config.headers || {};
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    } catch {
+      // In private browsing or sandboxed environments, localStorage may throw
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Response interceptor for consistent error extraction and session invalidation
 apiClient.interceptors.response.use(
   (response) => response.data,
   (error) => {
+    // If backend reports 401 on non-login endpoints, clear expired credentials
+    if (error.response?.status === 401) {
+      const url = error.config?.url || '';
+      if (!url.includes('/auth/login') && !url.includes('/admin/login')) {
+        try {
+          localStorage.removeItem('token');
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('user');
+        } catch {
+          // ignore
+        }
+      }
+    }
+
     const customMessage =
       error.response?.data?.message || error.message || 'An unexpected network error occurred';
     const err = new Error(customMessage);

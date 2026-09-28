@@ -49,6 +49,13 @@ export const getSocket = (userId = null) => {
       reconnectionDelay: 1000,
       auth: {
         userId: resolvedUserId,
+        token: (() => {
+          try {
+            return localStorage.getItem('token') || localStorage.getItem('authToken') || undefined;
+          } catch {
+            return undefined;
+          }
+        })(),
       },
     });
 

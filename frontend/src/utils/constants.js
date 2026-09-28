@@ -1,10 +1,17 @@
 /**
  * Application Constants
  */
+const resolveApiBaseUrl = () => {
+  const rawUrl = (import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || '/api').trim();
+  const trimmed = rawUrl.replace(/\/+$/, '');
+  if (!trimmed || trimmed === '/api') return '/api';
+  return trimmed.endsWith('/api') ? trimmed : `${trimmed}/api`;
+};
+
 export const APP_CONFIG = {
   name: 'BookMyShow Clone',
   tagline: 'MERN Stack Architecture • Production Release v1.0.0',
-  apiBaseUrl: import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || '/api',
+  apiBaseUrl: resolveApiBaseUrl(),
   version: '1.0.0',
 };
 

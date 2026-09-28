@@ -7,7 +7,15 @@ export const AuthContext = createContext(null);
  * Authentication Provider managing user session via HTTP-only cookies
  */
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    try {
+      const savedUser = localStorage.getItem('user');
+      const savedToken = localStorage.getItem('token') || localStorage.getItem('authToken');
+      return savedUser && savedToken ? JSON.parse(savedUser) : null;
+    } catch {
+      return null;
+    }
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -18,10 +26,22 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await authService.getCurrentUser();
       setUser(response.user);
+      try {
+        localStorage.setItem('user', JSON.stringify(response.user));
+      } catch {
+        // ignore storage errors
+      }
       setError(null);
       return response.user;
     } catch {
       setUser(null);
+      try {
+        localStorage.removeItem('token');
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('user');
+      } catch {
+        // ignore storage errors
+      }
       return null;
     } finally {
       setLoading(false);
@@ -37,11 +57,23 @@ export const AuthProvider = ({ children }) => {
         const response = await authService.getCurrentUser();
         if (!ignore) {
           setUser(response.user);
+          try {
+            localStorage.setItem('user', JSON.stringify(response.user));
+          } catch {
+            // ignore storage errors
+          }
           setError(null);
         }
       } catch {
         if (!ignore) {
           setUser(null);
+          try {
+            localStorage.removeItem('token');
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('user');
+          } catch {
+            // ignore storage errors
+          }
         }
       } finally {
         if (!ignore) {
@@ -65,7 +97,21 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     try {
       const response = await authService.login(credentials);
-      setUser(response.user);
+      if (response.token) {
+        try {
+          localStorage.setItem('token', response.token);
+        } catch {
+          // ignore storage errors
+        }
+      }
+      if (response.user) {
+        try {
+          localStorage.setItem('user', JSON.stringify(response.user));
+        } catch {
+          // ignore storage errors
+        }
+        setUser(response.user);
+      }
       return response;
     } catch (err) {
       setError(err.message);
@@ -83,7 +129,21 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     try {
       const response = await authService.register(userData);
-      setUser(response.user);
+      if (response.token) {
+        try {
+          localStorage.setItem('token', response.token);
+        } catch {
+          // ignore storage errors
+        }
+      }
+      if (response.user) {
+        try {
+          localStorage.setItem('user', JSON.stringify(response.user));
+        } catch {
+          // ignore storage errors
+        }
+        setUser(response.user);
+      }
       return response;
     } catch (err) {
       setError(err.message);
@@ -101,7 +161,21 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     try {
       const response = await authService.adminLogin(credentials);
-      setUser(response.user);
+      if (response.token) {
+        try {
+          localStorage.setItem('token', response.token);
+        } catch {
+          // ignore storage errors
+        }
+      }
+      if (response.user) {
+        try {
+          localStorage.setItem('user', JSON.stringify(response.user));
+        } catch {
+          // ignore storage errors
+        }
+        setUser(response.user);
+      }
       return response;
     } catch (err) {
       setError(err.message);
@@ -112,7 +186,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   /**
-   * Log out user and clear cookie
+   * Log out user and clear cookie & token
    */
   const logout = async () => {
     try {
@@ -120,6 +194,13 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       console.error('Logout error:', err.message);
     } finally {
+      try {
+        localStorage.removeItem('token');
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('user');
+      } catch {
+        // ignore storage errors
+      }
       setUser(null);
     }
   };

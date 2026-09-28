@@ -13,10 +13,12 @@ export const generateTokenAndSetCookie = (res, userId) => {
     expiresIn: '7d',
   });
 
+  const isProduction = process.env.NODE_ENV === 'production';
+
   const cookieOptions = {
     httpOnly: true, // Prevents client-side scripts from reading the cookie (mitigates XSS)
-    secure: process.env.NODE_ENV === 'production', // Use HTTPS only in production
-    sameSite: 'lax', // CSRF mitigation with standard navigation compatibility
+    secure: isProduction, // Use HTTPS only in production
+    sameSite: isProduction ? 'none' : 'lax', // 'none' required for cross-site cookie transmission (Vercel <-> Render)
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
     path: '/',
   };
@@ -31,12 +33,13 @@ export const generateTokenAndSetCookie = (res, userId) => {
  * @param {import('express').Response} res
  */
 export const clearTokenCookie = (res) => {
+  const isProduction = process.env.NODE_ENV === 'production';
   res.cookie('jwt', '', {
     httpOnly: true,
     expires: new Date(0),
     path: '/',
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
   });
 };
 

@@ -39,11 +39,12 @@ export const registerUser = async (req, res, next) => {
     });
 
     // Generate JWT and attach as HTTP-only cookie
-    generateTokenAndSetCookie(res, user._id);
+    const token = generateTokenAndSetCookie(res, user._id);
 
     return res.status(201).json({
       status: 'ok',
       message: 'Account registered successfully',
+      token,
       user: {
         _id: user._id,
         name: user.name,
@@ -86,11 +87,12 @@ export const loginUser = async (req, res, next) => {
     }
 
     // Generate JWT and attach as HTTP-only cookie
-    generateTokenAndSetCookie(res, user._id);
+    const token = generateTokenAndSetCookie(res, user._id);
 
     return res.status(200).json({
       status: 'ok',
       message: 'Logged in successfully',
+      token,
       user: {
         _id: user._id,
         name: user.name,

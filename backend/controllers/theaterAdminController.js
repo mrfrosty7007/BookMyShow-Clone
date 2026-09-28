@@ -2,6 +2,11 @@ import mongoose from 'mongoose';
 import Theater from '../models/Theater.js';
 import { generateDefaultRows, generateSeatsFromRows } from '../utils/seatLayoutGenerator.js';
 
+const escapeRegex = (text) => {
+  if (typeof text !== 'string') return '';
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
+
 /**
  * @desc    Create a new Multiplex / Theater
  * @route   POST /api/admin/theaters
@@ -115,12 +120,12 @@ export const getAdminTheaters = async (req, res, next) => {
 
     // City Filter
     if (city && city.trim() && city !== 'All Cities') {
-      filter.city = { $regex: new RegExp(`^${city.trim()}$`, 'i') };
+      filter.city = { $regex: new RegExp(`^${escapeRegex(city.trim())}$`, 'i') };
     }
 
     // Search Query (name, city, address)
     if (search && search.trim()) {
-      const searchRegex = new RegExp(search.trim(), 'i');
+      const searchRegex = new RegExp(escapeRegex(search.trim()), 'i');
       filter.$or = [{ name: searchRegex }, { city: searchRegex }, { address: searchRegex }];
     }
 

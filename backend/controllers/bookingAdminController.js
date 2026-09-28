@@ -5,6 +5,11 @@ import AuditLog from '../models/AuditLog.js';
 import { calculateRefund } from '../utils/refundCalculator.js';
 import { recoverExpiredSeatLocks } from '../utils/seatLockRecovery.js';
 
+const escapeRegex = (text) => {
+  if (typeof text !== 'string') return '';
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
+
 /**
  * Get all bookings with filtering, search, pagination, and KPI metrics
  * @route   GET /api/admin/bookings
@@ -37,7 +42,7 @@ export const getAdminBookings = async (req, res, next) => {
 
     // 1. Text & Identifier Search
     if (search.trim()) {
-      const searchRegex = new RegExp(search.trim(), 'i');
+      const searchRegex = new RegExp(escapeRegex(search.trim()), 'i');
 
       // Search users matching name, email, or phone
       const matchingUsers = await User.find({

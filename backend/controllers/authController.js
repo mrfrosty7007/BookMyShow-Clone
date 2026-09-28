@@ -18,7 +18,7 @@ export const registerUser = async (req, res, next) => {
       });
     }
 
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
 
     // Check if user already exists
     const userExists = await User.findOne({ email: email.toLowerCase() });
@@ -30,11 +30,12 @@ export const registerUser = async (req, res, next) => {
     }
 
     // Create user (password is automatically hashed via Mongoose pre-save hook)
+    // Security Hardening: Enforce role 'user' unconditionally for public registration
     const user = await User.create({
       name,
       email,
       password,
-      role: role === 'admin' || role === 'partner' ? role : 'user',
+      role: 'user',
     });
 
     // Generate JWT and attach as HTTP-only cookie

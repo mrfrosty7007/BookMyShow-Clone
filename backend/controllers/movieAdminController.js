@@ -1,6 +1,11 @@
 import mongoose from 'mongoose';
 import Movie from '../models/Movie.js';
 
+const escapeRegex = (text) => {
+  if (typeof text !== 'string') return '';
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
+
 /**
  * Helper to normalize string or array inputs (e.g. from multipart form data)
  */
@@ -134,13 +139,13 @@ export const getAdminMovies = async (req, res, next) => {
 
     // Search by title or description
     if (search && search.trim()) {
-      const searchRegex = new RegExp(search.trim(), 'i');
+      const searchRegex = new RegExp(escapeRegex(search.trim()), 'i');
       query.$or = [{ title: searchRegex }, { description: searchRegex }];
     }
 
     // Genre filter
     if (genre && genre !== 'all') {
-      query.genre = { $in: [new RegExp(genre.trim(), 'i')] };
+      query.genre = { $in: [new RegExp(escapeRegex(genre.trim()), 'i')] };
     }
 
     // Featured filter

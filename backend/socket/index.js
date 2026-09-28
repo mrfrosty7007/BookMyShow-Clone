@@ -32,12 +32,14 @@ export const initSocket = (httpServer) => {
     'http://127.0.0.1:5174',
     'http://localhost:3000',
     process.env.CLIENT_URL,
+    process.env.CLIENT_URL?.replace(/\/+$/, ''),
   ].filter(Boolean);
 
   const io = new Server(httpServer, {
     cors: {
       origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
           callback(null, true);
         } else {
           callback(new Error(`Origin ${origin} not allowed by Socket.IO CORS`));

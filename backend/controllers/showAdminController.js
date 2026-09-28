@@ -6,6 +6,11 @@ import { checkScreenConflict, formatTimeStr } from '../utils/showConflictChecker
 import { calculateShowPricing } from '../utils/pricingEngine.js';
 import { generateSeatInventory } from '../utils/seatInventoryGenerator.js';
 
+const escapeRegex = (text) => {
+  if (typeof text !== 'string') return '';
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
+
 /**
  * Calculates start and end boundaries for a given date string or Date object
  */
@@ -80,7 +85,7 @@ export const getAdminShows = async (req, res) => {
     // Search by movie title if search keyword provided
     if (search && search.trim()) {
       const matchingMovies = await Movie.find({
-        title: { $regex: search.trim(), $options: 'i' },
+        title: { $regex: escapeRegex(search.trim()), $options: 'i' },
       }).select('_id');
       const movieIds = matchingMovies.map((m) => m._id);
       query.movie = { $in: movieIds };

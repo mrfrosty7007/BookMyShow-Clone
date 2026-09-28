@@ -1,0 +1,18 @@
+{
+  "short_name": "BookMyShow",
+  "name": "BookMyShow Clone — Cinema Booking & Multiplex Operations",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192 512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#0b0f19",
+  "theme_color": "#0b0f19",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "description": "Full-stack MERN cinema ticket reservation, real-time seat locking, and executive multiplex operations platform."
+}

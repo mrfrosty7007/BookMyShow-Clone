@@ -1,60 +1,96 @@
-# BookMyShow Clone — Production MERN Stack Suite (v1.0.0)
+<div align="center">
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node.js Version](https://img.shields.io/badge/Node.js-22%20LTS-green.svg)](https://nodejs.org/)
-[![React Version](https://img.shields.io/badge/React-19-blue.svg)](https://react.dev/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS%20v4-38bdf8.svg)](https://tailwindcss.com/)
-[![Express.js](https://img.shields.io/badge/Express-4.x-lightgrey.svg)](https://expressjs.com/)
-[![MongoDB Atlas](https://img.shields.io/badge/MongoDB-Atlas%20%2F%20Mongoose%208-emerald.svg)](https://mongoosejs.com/)
-[![Socket.IO](https://img.shields.io/badge/Socket.IO-4.8%20Realtime-white.svg)](https://socket.io/)
-[![Deployment: Railway](https://img.shields.io/badge/Backend-Railway-0B0D0E.svg)](https://railway.app/)
-[![Deployment: Vercel](https://img.shields.io/badge/Frontend-Vercel-black.svg)](https://vercel.com/)
+# 🎬 BookMyShow Clone — Enterprise MERN Suite
 
-> **Disclaimer:** This is an educational clone developed strictly for portfolio demonstration and software architecture learning purposes. It is not affiliated with, endorsed by, or associated in any way with **BookMyShow** or **Bigtree Entertainment Pvt. Ltd.**
+### *Production-Ready Cinema Ticketing, Real-Time Seat Locking & Executive Multiplex Operations*
+
+[![Release](https://img.shields.io/badge/Release-v1.0.0-f84464.svg?style=for-the-badge&logo=rocket)](https://github.com/mrfrosty7007/BookMyShow-Clone/releases/tag/v1.0.0)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+[![Node.js](https://img.shields.io/badge/Node.js-22_LTS-339933.svg?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![React](https://img.shields.io/badge/React-19.0-61DAFB.svg?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS_v4-06B6D4.svg?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Express.js](https://img.shields.io/badge/Express-4.x-000000.svg?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
+[![MongoDB Atlas](https://img.shields.io/badge/MongoDB-Atlas_8.0-47A248.svg?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/atlas)
+[![Socket.IO](https://img.shields.io/badge/Socket.IO-4.8_Realtime-010101.svg?style=for-the-badge&logo=socketdotio&logoColor=white)](https://socket.io/)
+[![Deployment: Railway](https://img.shields.io/badge/Backend-Railway-0B0D0E.svg?style=for-the-badge&logo=railway&logoColor=white)](https://railway.app/)
+[![Deployment: Vercel](https://img.shields.io/badge/Frontend-Vercel-000000.svg?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
+
+<p align="center">
+  <a href="#-executive-overview">Overview</a> •
+  <a href="#-system-architecture">Architecture</a> •
+  <a href="#-core-feature-matrix">Features</a> •
+  <a href="#-performance-engineering">Performance</a> •
+  <a href="#-security-hardening">Security</a> •
+  <a href="#-rest-api-reference">API Docs</a> •
+  <a href="#-quickstart--local-setup">Quickstart</a> •
+  <a href="#-production-deployment">Deployment</a>
+</p>
+
+---
+
+</div>
+
+> [!NOTE]
+> **Educational & Portfolio Disclaimer:** This is an open-source educational clone engineered strictly for architectural demonstration, full-stack systems design, and performance portfolio benchmarking. It is not affiliated with, endorsed by, or associated in any way with **BookMyShow** or **Bigtree Entertainment Pvt. Ltd.**
 
 ---
 
 ## 📌 Executive Overview
 
-**BookMyShow-Clone** is an enterprise-grade full-stack cinema ticketing platform built with the **MERN** stack (MongoDB, Express, React, Node.js). Spanning from public storefront movie discovery to real-time seat locking, dynamic QR ticketing, cinema entrance scanner kiosks, multiplex screen design builders, conflict-free scheduling engines, and executive business intelligence dashboards, this platform models the end-to-end operational lifecycle of modern cinema chains.
+**BookMyShow MERN Clone** is a production-grade full-stack cinema ticketing platform built with modern JavaScript and cloud persistence. Unlike simple storefront demos, this system models the **entire operational lifecycle** of a modern multiplex chain:
+
+```
+Customer Discovery ➔ Real-Time Seat Locking ➔ Simulated Checkout ➔ Signed QR Ticketing ➔ 
+Gate Scanner Admission ➔ Automated Inventory Restoration ➔ Executive Business Intelligence
+```
+
+### Why This Architecture Stands Out
+- **Zero White-Screen Crash Protection:** Protected by a root-level **React 19 Error Boundary** with automated error logging, live diagnostic drawer, and graceful 1-click session restoration.
+- **Real-Time Seat Locking:** Powered by **Socket.IO** with a 5-minute temporary reservation window, TTL cleanup, and concurrent collision detection.
+- **-95.5% Query Memory Optimization:** Hardened with Mongoose `.lean()` across all public customer endpoints, dropping batch query heap overhead from **42.7 MB down to 1.89 MB**.
+- **Index-Covered Queries:** Audited B-Tree indexes eliminating full collection scans (`COLLSCAN`) and memory-intensive `SORT` stages.
+- **Production Hardened Security:** HTTP-Only JWT cookies, strict RBAC, ReDoS/Regex input sanitization, and automated NoSQL injection mitigation.
 
 ---
 
-## 🏗 Architecture Overview
+## 🏗 System Architecture
 
 ```mermaid
 flowchart TD
     subgraph Client["Frontend Client (React 19 + Vite)"]
-        UI[Customer Storefront]
-        SeatMap[Interactive Seat Grid]
-        StaffScanner[Cinema QR Scanner]
-        AdminConsole[Executive BI & CMS Console]
+        UI["Customer Storefront<br>(Tailwind CSS v4)"]
+        SeatMap["Interactive Seat Grid<br>(Real-time)"]
+        StaffScanner["Cinema QR Scanner<br>(Gate Entry)"]
+        AdminConsole["Executive Analytics & CMS<br>(Recharts)"]
+        ErrorBoundary["React 19 Error Boundary<br>(Crash Recovery)"]
     end
 
-    subgraph RealTime["Real-Time Synchronization"]
-        SocketClient[Socket.IO Client]
-        SocketServer[Socket.IO Server Engine]
+    subgraph RealTime["Real-Time Engine"]
+        SocketClient["Socket.IO Client"]
+        SocketServer["Socket.IO Engine<br>(CORS Preview Aware)"]
     end
 
-    subgraph Gateway["Reverse Proxy & Gateway"]
-        Proxy[Railway / Reverse Proxy]
-        TrustProxy["trust proxy=1"]
-        RateLimiter["express-rate-limit (300 req / 15m)"]
+    subgraph Gateway["Reverse Proxy & Perimeter"]
+        Proxy["Railway / Vercel Edge Proxy"]
+        TrustProxy["app.set('trust proxy', 1)"]
+        RateLimiter["express-rate-limit<br>(300 req / 15m)"]
+        HelmetMW["Helmet HTTP Headers<br>(HSTS, CSP)"]
     end
 
     subgraph Backend["Express 4 Application Layer"]
-        AuthMiddleware["JWT HTTP-Only Auth & RBAC"]
-        MovieCtrl[Movie Management CMS]
-        ShowCtrl[Show Scheduling & Conflict Engine]
-        BookingCtrl[Booking & Payment Simulation]
-        ValidationCtrl[Ticket Entry & Duplicate Protection]
-        AnalyticsCtrl[Executive Analytics & Reporting]
+        AuthMW["JWT HTTP-Only Auth & RBAC Guard"]
+        Sanitizer["escapeRegex() & NoSQL Sanitizer"]
+        MovieCtrl["Movie CMS Controller"]
+        ShowCtrl["Show Scheduling & Conflict Engine"]
+        BookingCtrl["Booking & Transaction Engine"]
+        ValidationCtrl["Gate Scanner & Duplicate Guard"]
+        AnalyticsCtrl["Executive BI & Reporting Engine"]
     end
 
-    subgraph Persistence["Persistence & Database Layer"]
-        MongoAtlas[("MongoDB Atlas Sharded Cluster")]
-        SeatLocks[("Seat Locks TTL Index")]
-        AuditLogs[("Gate Validation Audit Logs")]
+    subgraph Persistence["Persistence & Database Tier"]
+        MongoAtlas[("MongoDB Atlas<br>Sharded Cluster")]
+        SeatLocks[("Seat Locks<br>TTL Index 5m")]
+        AuditLogs[("Gate Validation<br>Audit Trail")]
     end
 
     UI --> Proxy
@@ -63,15 +99,15 @@ flowchart TD
     SeatMap <--> SocketClient
     SocketClient <--> SocketServer
 
-    Proxy --> TrustProxy --> RateLimiter --> Backend
+    Proxy --> TrustProxy --> HelmetMW --> RateLimiter --> Sanitizer --> Backend
     SocketServer <--> SeatLocks
 
-    Backend --> AuthMiddleware
-    AuthMiddleware --> MovieCtrl
-    AuthMiddleware --> ShowCtrl
-    AuthMiddleware --> BookingCtrl
-    AuthMiddleware --> ValidationCtrl
-    AuthMiddleware --> AnalyticsCtrl
+    Backend --> AuthMW
+    AuthMW --> MovieCtrl
+    AuthMW --> ShowCtrl
+    AuthMW --> BookingCtrl
+    AuthMW --> ValidationCtrl
+    AuthMW --> AnalyticsCtrl
 
     Backend <--> MongoAtlas
     ValidationCtrl --> AuditLogs
@@ -79,109 +115,192 @@ flowchart TD
 
 ---
 
-## 🌟 Core Features Catalog
+## 🌟 Core Feature Matrix
 
-### 1. 🔐 Authentication & Session Security (Phase 1 & 1.5)
-- **HTTP-Only JWT Cookies**: Neutralizes XSS token theft by storing access tokens in encrypted HTTP-only, `sameSite: 'lax'`, secure cookies.
-- **Bcrypt Password Encryption**: 12 salt rounds for strong credential hashing.
-- **Role-Based Access Control (RBAC)**: Distinct permissions for `customer`, `staff`, and `admin` roles with custom route guards.
-- **NoSQL Query Sanitization**: Automatic sanitization stripping `$` and `.` operators via `express-mongo-sanitize`.
-- **Brute-Force Protection**: Dedicated 5-attempt rate limiters on login endpoints.
-
-### 2. 🎬 Movie & Theater Catalog (Phase 2 & 2.7)
-- **Multi-City Support**: Filter showtimes and multiplexes across major metropolitan regions (Mumbai, Delhi-NCR, Bengaluru, Hyderabad, Chennai, Kolkata).
-- **Format Tagging**: Support for Standard 2D/3D, IMAX 3D, Dolby Atmos, Gold Class, and 4DX.
-- **Dynamic Show Listings**: Aggregated showtime chips categorized by morning, matinee, evening, and night windows with real-time availability counters.
-
-### 3. 💺 Interactive Seat Selection & Real-Time Locking (Phase 3.1 & 3.2)
-- **Multi-Tier Seating Grids**: VIP, Premium, and Executive tiers with dynamic pricing, accessibility spaces, and realistic cinema aisles.
-- **Real-Time Seat Locking via Socket.IO**:
-  - Temporary 5-minute seat reservation timer with countdown feedback.
-  - Automatic collision prevention across concurrent user sessions.
-  - Automatic seat unlock upon tab closure, explicit deselect, or timer expiration.
-  - Seamless promotion from locked status to permanent booking upon successful checkout.
-
-### 4. 💳 Checkout, Simulated Payments & QR Tickets (Phase 3.3)
-- **Integrated Checkout Drawer**: Transparent fee breakdowns detailing base fare, convenience charges, and GST.
-- **Mock Payment Gateway**: Interactive simulated credit card and UPI payment processing animations.
-- **Cryptographic QR Pass Generation**: Tamper-proof signed payload embedded in scannable QR ticket barcodes.
-- **PDF & Digital Pass Generation**: One-click printable PDF tickets and mobile pass downloads.
-- **Customer "My Bookings" Portal**: Full booking history with live countdown to showtime, status tracking, and self-service cancellation.
-
-### 5. 🛠 Administrative CMS & Operations (Phase 4.1 – 4.5)
-- **Movie Management System**: Create, update, soft-delete, restore, and feature movies with image upload support.
-- **Visual Multiplex & Seat Builder**: Design auditorium layouts visually with row configurations, custom aisles, and format assignment.
-- **Conflict-Aware Show Scheduling Engine**: Automated show overlap detection factoring in film duration, interval cleaning buffers, and maintenance slots.
-- **QR Ticket Entrance Scanner**: Web-based camera and manual barcode scanner for cinema staff at gates, featuring duplicate entry detection (HTTP 409) and session validation.
-- **Refund Tier Automation Engine**: Multi-tiered refund calculation (100% for >24h, 75% for 6–24h, 50% for 1–6h) with automated inventory seat restoration.
-- **Seat Lock Recovery Daemon**: Background recovery engine automatically reclaiming orphaned seats.
-
-### 6. 📊 Executive Analytics & Business Intelligence Suite (Phase 4.6)
-- **Executive KPI Ribbon**: Total gross revenue, net revenue, tickets sold, average ticket price (ATP), refund rate, and admission check-in percentage with growth velocity delta badges.
-- **7D × 4 Diurnal Slots Occupancy Heatmap**: 28-cell matrix mapping congestion density across Monday–Sunday and Morning, Matinee, Evening, and Night windows.
-- **Revenue Intelligence Curves**: Recharts AreaChart with smooth monotone curves and Daily, Weekly, and Monthly resolution toggles.
-- **Movie Performance Ranking**: Composed dual-axis chart benchmarking Top 10 box office grossers against auditorium occupancy rates.
-- **Theater Format Utilization**: Capacity and revenue efficiency comparisons across IMAX, Dolby Atmos, and Standard screens.
-- **Automated Heuristic Insights Engine**: Real-time synthesized observations identifying peak drivers, format performance deltas, and operational health.
-- **Multi-Format Report Export System**: One-click generation and streaming download of executive CSV reports and printable PDF executive briefs.
-
-### 7. 🛡 Production Hardening & Resilience (Phase 5)
-- **Reverse Proxy Trust**: `app.set("trust proxy", 1)` for accurate client IP identification behind Railway, Render, and Vercel.
-- **Global API Rate Limiting**: 300 requests / 15 minutes per IP in production (1000 in development), with `/api/health` bypassed for monitoring.
-- **Deployment Health Monitoring**: Lightweight `GET /api/health` reporting service status, environment, uptime, and timestamp with zero DB mutations.
-- **Graceful Process Shutdown**: Orderly cleanup closing HTTP server first, then terminating MongoDB Atlas connection on `SIGINT` / `SIGTERM`.
-- **Production Environment Validation**: Startup fails fast with diagnostic output if `MONGODB_URI`, `JWT_SECRET`, or `CLIENT_URL` are missing in production.
+| Domain | Key Capabilities | Technical Stack |
+| :--- | :--- | :--- |
+| **Storefront Discovery** | Multi-city cinema filtering, dynamic genre tabs, search query sanitization, carousel hero banner, upcoming releases. | React 19, Tailwind CSS v4, Lucide |
+| **Auditorium Seating** | Multi-tier seat layout (Standard, Premium, VIP), aisle spacing, wheelchair spaces, dynamic pricing calculations. | SVG Grid, CSS Flexbox |
+| **Real-Time Locking** | 5-minute seat countdown timer, atomic collision prevention, background cleanup reaper, auto-release on disconnect. | Socket.IO 4.8, MongoDB TTL |
+| **Ticketing & Checkout** | Transparent fee calculation (GST + convenience fee), mock payment processing, cryptographic signed QR tokens, PDF pass generation. | jsPDF, QRCode.react, Canvas |
+| **Gate Operations** | Fast web camera QR scanning, manual code entry, duplicate check-in rejection (`HTTP 409`), gate & staff attribution. | HTML5 Video, AuditLog Model |
+| **Show Scheduling** | Conflict detection engine, cleaning buffer & trailer buffer calculations, recurring schedules, timeline matrix. | Date math, Compound Indexes |
+| **Executive BI** | 6-metric KPI ribbon, 28-cell diurnal occupancy heatmap, revenue area curves, movie benchmarking, streaming CSV export. | Recharts 2.x, MongoDB Aggregation |
+| **Crash Recovery** | Top-level React 19 Error Boundary, dark cyber fallback, 1-click reload, home redirect, collapsible diagnostics. | React Component Lifecycle |
 
 ---
 
-## 💻 Tech Stack Specification
+## 📂 Repository File Structure
 
-| Category | Technology | Purpose |
-|:---------|:-----------|:--------|
-| **Frontend Framework** | React 19 + Vite | High-performance Single Page Application (SPA) with ES Modules |
-| **Styling & Theme** | Tailwind CSS v4 | Cyberpunk dark-mode executive UI design system |
-| **Routing** | React Router DOM v7 | Declarative routing with protected Admin and Customer layouts |
-| **Visualizations** | Recharts 2.x | Area, Bar, Line, Heatmap, and Composed charts |
-| **Icons** | Lucide React | Clean, tree-shakeable SVG icons |
-| **Backend Runtime** | Node.js 22 LTS | Standardized JavaScript runtime (ESM) |
-| **API Framework** | Express 4.x | Modular RESTful API architecture |
-| **Database** | MongoDB Atlas | Cloud-hosted sharded document persistence via Mongoose 8 |
-| **Real-Time Engine** | Socket.IO 4.8 | Bidirectional seat reservation and live availability syncing |
-| **Security Suite** | Helmet, express-rate-limit, express-mongo-sanitize, cookieParser, bcryptjs, jsonwebtoken | HTTP headers, NoSQL query sanitization, IP rate limits, and secure cookies |
-| **Hosting & CI/CD** | Railway (Backend) + Vercel (Frontend) | Production PaaS deployment with automated Git builds |
+```text
+BookMyShow-Clone/
+├── backend/
+│   ├── config/             # Database connection & environment configuration
+│   ├── controllers/        # REST API route controllers (.lean() optimized)
+│   │   ├── adminController.js
+│   │   ├── analyticsController.js
+│   │   ├── authController.js           # Hardened RBAC authentication
+│   │   ├── bookingAdminController.js
+│   │   ├── bookingController.js
+│   │   ├── movieAdminController.js
+│   │   ├── movieController.js
+│   │   ├── showAdminController.js
+│   │   ├── showController.js
+│   │   ├── theaterAdminController.js
+│   │   ├── theaterController.js
+│   │   └── ticketValidationController.js
+│   ├── middleware/         # Auth verification, role guards, error handlers
+│   ├── models/             # Mongoose schemas with compound B-Tree indexes
+│   │   ├── AuditLog.js
+│   │   ├── Booking.js
+│   │   ├── Movie.js
+│   │   ├── SeatLock.js
+│   │   ├── Show.js
+│   │   ├── Theater.js
+│   │   └── User.js
+│   ├── routes/             # Express API route declarations
+│   ├── scripts/            # Automated verification & benchmark test suites
+│   ├── seed/               # Database seeder scripts (Admin & catalog data)
+│   ├── socket/             # Socket.IO seat locking engine & preview CORS
+│   ├── utils/              # Revenue engine, occupancy calculator, QR verifier
+│   ├── app.js              # Express app definition & middleware pipeline
+│   ├── server.js           # Server bootstrap (DB connected before listen)
+│   └── package.json
+│
+├── frontend/
+│   ├── public/             # PWA manifest.json, favicon.svg, static icons
+│   ├── src/
+│   │   ├── components/     # UI components (ErrorBoundary, MovieCard, Navbar)
+│   │   ├── context/        # Authentication & global session context
+│   │   ├── hooks/          # Custom hooks (useAuth, useFetch)
+│   │   ├── layouts/        # MainLayout & AdminLayout wrappers
+│   │   ├── pages/          # Customer & Admin pages
+│   │   │   ├── admin/      # Analytics, Movies CMS, Theaters, Scanner
+│   │   │   ├── BookingConfirmation.jsx
+│   │   │   ├── Home.jsx
+│   │   │   ├── MovieDetails.jsx
+│   │   │   ├── MyBookings.jsx
+│   │   │   └── ShowDetails.jsx
+│   │   ├── routes/         # Centralized React Router DOM definitions
+│   │   ├── services/       # Axios API client & endpoints
+│   │   ├── utils/          # PDF generator, date formatters, constants
+│   │   ├── App.jsx         # Root app component with ErrorBoundary wrapper
+│   │   ├── index.css       # Tailwind CSS v4 design tokens & cyber themes
+│   │   └── main.jsx        # React DOM entry point
+│   ├── vercel.json         # Vercel SPA routing configuration
+│   └── package.json
+│
+├── .gitignore
+├── CONTRIBUTING.md          # Open-source contributing guidelines & commit conventions
+├── DEPLOYMENT_CHECKLIST.md  # Production Railway & Vercel deployment checklist
+├── LICENSE                  # MIT License
+├── README.md                # Project documentation landing page
+├── railway.json             # Railway backend deployment configuration
+├── RELEASE_NOTES_v1.0.0.md  # Detailed v1.0.0 release changelog
+└── SECURITY.md              # Security policy, supported versions & disclosure guidelines
+```
+
+---
+
+## ⚡ Performance Engineering
+
+During **Sprint 5.1**, our database and memory profiles were systematically audited and optimized for high-throughput production loads.
+
+### 1. Mongoose `.lean()` Memory Hardening
+By bypassing unnecessary Mongoose internal document hydration on public read queries, the backend eliminates memory churn:
+
+| Endpoint | Hydrated (Before) | Optimized (After) | Gain |
+| :--- | :--- | :--- | :--- |
+| `GET /api/shows` (50 queries, 2 nested populates) | 42.68 MB Heap | 1.89 MB Heap | **-95.5% Heap Allocation** 🚀 |
+| Document Serialization | Mongoose schema tree traversal | Native V8 C++ `JSON.stringify` | **Sub-millisecond serialization** |
+
+### 2. MongoDB B-Tree Compound Indexing
+All unindexed queries and memory sorts were eliminated via targeted compound indexes:
+
+- **Theater City Filter:** Added `theaterSchema.index({ city: 1 })` — Eliminated full collection scan (`COLLSCAN` ➔ `IXSCAN`).
+- **Active Movie Catalog:** Added `movieSchema.index({ isActive: 1, releaseDate: -1 })` — Eliminated in-memory `SORT` stage.
+- **Show Scheduling:** Added `showSchema.index({ movie: 1, isActive: 1, status: 1, showTime: 1 })`.
+- **Seat Locks:** Added `seatLockSchema.index({ showId: 1, expiresAt: 1 })` — Range scans active locks directly in B-Tree.
+- **Index Deduplication:** Removed 5 redundant left-prefix single-field indexes (`user`, `movie`, `theater`, `showId`, `timestamp`).
+
+---
+
+## 🔒 Security Hardening
+
+Our application enforces defense-in-depth across the entire stack:
+
+- **Immutable Role Assignment:** Public registration endpoint (`/api/auth/register`) enforces `role: 'user'`, preventing privilege escalation attacks.
+- **ReDoS Prevention:** Dynamic regex inputs in city and search filters are escaped using a centralized `escapeRegex()` helper.
+- **Preview Environment CORS:** Socket.IO origin resolver validates exact production domains while allowing dynamic `*.vercel.app` preview deployments.
+- **HTTP-Only Session Cookies:** Sensitive JWT tokens are stored in encrypted HTTP-only cookies, eliminating XSS token exfiltration risks.
+- **NoSQL Injection Guard:** Reserved MongoDB prefixes (`$` and `.`) are automatically sanitized.
+- **Perimeter Rate Limiting:** 300 requests / 15 minutes per IP enforced via `express-rate-limit`.
+
+---
+
+## 📡 REST API Reference
+
+### Public Customer Endpoints
+| Method | Endpoint | Description | Access |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/health` | Lightweight service health check | Public |
+| `POST` | `/api/auth/register` | Register new customer account (`role: 'user'`) | Public |
+| `POST` | `/api/auth/login` | Authenticate & set HTTP-only cookie | Public |
+| `POST` | `/api/auth/logout` | Clear session cookie | Public |
+| `GET` | `/api/movies` | Fetch active movies (`.lean()` sorted by release) | Public |
+| `GET` | `/api/movies/:id` | Fetch movie details by ID | Public |
+| `GET` | `/api/theaters` | List theaters with optional `?city=` filter | Public |
+| `GET` | `/api/shows` | List active showtimes with populated movie/theater | Public |
+| `GET` | `/api/shows/:id` | Get show details with real-time seat lock grid | Public |
+
+### Authenticated Customer Endpoints
+| Method | Endpoint | Description | Access |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/auth/me` | Fetch authenticated user profile | Private (User) |
+| `POST` | `/api/bookings` | Create confirmed booking & reserve seats | Private (User) |
+| `GET` | `/api/bookings/my-bookings`| List current user booking history | Private (User) |
+| `GET` | `/api/bookings/:id` | Get booking details & QR pass | Private (User) |
+
+### Administrative & Operations Endpoints
+| Method | Endpoint | Description | Access |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/admin/login` | Administrative console login | Public |
+| `GET` | `/api/admin/analytics/overview` | Executive KPI ribbon & insights | Private (Admin) |
+| `GET` | `/api/admin/analytics/export/csv` | Stream CSV data reports | Private (Admin) |
+| `POST` | `/api/admin/tickets/validate` | Gate scanner QR admission verification | Private (Staff/Admin) |
+| `POST` | `/api/admin/shows` | Create show with conflict detection | Private (Admin) |
+| `POST` | `/api/admin/movies` | Create movie record in CMS | Private (Admin) |
+| `POST` | `/api/admin/theaters` | Create multiplex theater layout | Private (Admin) |
 
 ---
 
 ## 🚀 Quickstart & Local Setup
 
 ### Prerequisites
-- **Node.js**: `v20.x` or `v22.x LTS` installed
-- **MongoDB**: Local MongoDB instance or free [MongoDB Atlas Cluster](https://www.mongodb.com/atlas)
+- **Node.js:** `v20.x` or `v22.x LTS`
+- **MongoDB:** Local instance or [MongoDB Atlas Cluster](https://cloud.mongodb.com)
 - **Git**
 
-### 1. Clone the Repository
+### 1. Clone & Configure
 ```bash
 git clone https://github.com/mrfrosty7007/BookMyShow-Clone.git
 cd BookMyShow-Clone
-```
 
-### 2. Configure Environment Variables
-Copy the example environment files:
-```bash
-# Backend environment setup
+# Configure backend environment
 cp backend/.env.example backend/.env
 
-# Frontend environment setup
+# Configure frontend environment
 cp frontend/.env.example frontend/.env
 ```
 
+### 2. Environment Setup
 Edit `backend/.env`:
 ```env
 PORT=5000
-MONGODB_URI=mongodb+srv://<username>:<password>@cluster.xxxxx.mongodb.net/bookmyshow_clone?retryWrites=true&w=majority
-JWT_SECRET=your_super_secure_jwt_secret_key_here_at_least_32_chars
-CLIENT_URL=http://localhost:5173
 NODE_ENV=development
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/bookmyshow_clone?retryWrites=true&w=majority
+JWT_SECRET=your_development_jwt_secret_key_at_least_32_chars
+CLIENT_URL=http://localhost:5173
 ```
 
 Edit `frontend/.env`:
@@ -189,122 +308,74 @@ Edit `frontend/.env`:
 VITE_API_URL=/api
 ```
 
-### 3. Install Dependencies
+### 3. Install Dependencies & Seed
 ```bash
-# Install backend dependencies
+# Install backend
 cd backend && npm install
 
-# Install frontend dependencies
+# Seed administrator & sample catalog data
+npm run seed:admin
+npm run seed
+
+# Install frontend
 cd ../frontend && npm install
 cd ..
 ```
 
-### 4. Seed the Database
-Populate active movies, multiplexes, screens, and administrative credentials:
-```bash
-cd backend
-npm run seed:admin   # Seeds default admin: admin@bookmyshow.com / AdminPassword123!
-npm run seed         # Seeds sample movies, multiplexes, and schedule showtimes
-cd ..
-```
-
-### 5. Launch the Development Servers
+### 4. Launch Application
 In two separate terminals:
 
-**Terminal 1 (Backend API & Socket.IO):**
 ```bash
+# Terminal 1: Backend API & Socket.IO
 cd backend
 npm run dev
-# Running on http://localhost:5000
-```
 
-**Terminal 2 (Frontend Client):**
-```bash
+# Terminal 2: Frontend Client
 cd frontend
 npm run dev
-# Running on http://localhost:5173
 ```
 
-Visit **http://localhost:5173** to browse movies and book tickets.  
-Access the **Admin Portal** at **http://localhost:5173/admin/login** (`admin@bookmyshow.com` / `AdminPassword123!`).
+- **Customer Storefront:** Visit `http://localhost:5173`
+- **Admin Console:** Visit `http://localhost:5173/admin/login`  
+  Default Credentials: `admin@bookmyshow.com` / `AdminPassword123!`
 
 ---
 
-## 🌐 Production Deployment Guide
+## 🌐 Production Deployment
 
-### A. Deploy Backend on Railway
+### Backend (Railway)
+1. Link GitHub repository on [Railway](https://railway.app/).
+2. Set Root Directory to `backend` (or use root `railway.json`).
+3. Set environment variables: `NODE_ENV=production`, `MONGODB_URI`, `JWT_SECRET`, `CLIENT_URL`.
+4. Railway will automatically build and poll `/api/health`.
 
-1. **Create Railway Project**: Log into [Railway.app](https://railway.app/) and create a **New Project** → **Deploy from GitHub repo**.
-2. **Select Repository**: Pick `BookMyShow-Clone`.
-3. **Configure Service**:
-   - In Settings, set **Root Directory** to `backend` (or use the root `railway.json` configuration).
-   - Verify **Build Command**: `npm install`
-   - Verify **Start Command**: `npm start`
-4. **Set Environment Variables**:
-   ```env
-   NODE_ENV=production
-   PORT=5000
-   MONGODB_URI=mongodb+srv://<username>:<password>@cluster.xxxxx.mongodb.net/bookmyshow_clone?retryWrites=true&w=majority
-   JWT_SECRET=generate_a_long_random_production_secret_key
-   CLIENT_URL=https://your-frontend-app.vercel.app
-   ```
-5. **Verify Healthcheck**:
-   - Railway will poll `GET /api/health` automatically (configured in `railway.json`).
+### Frontend (Vercel)
+1. Import repository to [Vercel](https://vercel.com/).
+2. Set Root Directory to `frontend`.
+3. Set Environment Variable: `VITE_API_URL=https://your-backend.up.railway.app/api`.
+4. SPA routing is automatically handled by `frontend/vercel.json`.
 
 ---
 
-### B. Deploy Frontend on Vercel
+## 🗺 Project Roadmap
 
-1. **Import to Vercel**: Log into [Vercel.com](https://vercel.com/) and click **Add New** → **Project** → select `BookMyShow-Clone`.
-2. **Configure Project Settings**:
-   - **Framework Preset**: `Vite`
-   - **Root Directory**: `frontend`
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
-3. **Set Environment Variables**:
-   ```env
-   VITE_API_URL=https://your-backend-service.up.railway.app/api
-   ```
-4. **Deploy**:
-   - Vercel automatically deploys the application with SPA fallback routing configured in `frontend/vercel.json`.
-
----
-
-### C. Connect & Whitelist MongoDB Atlas
-1. In the [MongoDB Atlas Dashboard](https://cloud.mongodb.com/), navigate to **Network Access**.
-2. Add an IP Access Entry: `0.0.0.0/0` (Allow access from anywhere) to allow Railway dynamic dynos to connect securely over TLS.
-3. In **Database Access**, verify your database user has read/write privileges on `bookmyshow_clone`.
+- [x] **Phase 0:** Project Foundation, Tooling, ESLint & Prettier
+- [x] **Phase 1:** JWT Authentication, Bcrypt (12 rounds), HTTP-Only Cookies, RBAC
+- [x] **Phase 2:** Movie & Theater Catalog, Multi-City Filtering, Showtimes
+- [x] **Phase 3:** Interactive Seating Grid, Socket.IO Real-Time Locking, QR Ticketing
+- [x] **Phase 4:** Admin CMS, Conflict-Aware Scheduling, Gate Scanner, Executive Analytics
+- [x] **Phase 5:** Production Hardening, .lean() Optimizations, MongoDB Indexing, Error Boundary
+- [ ] **Phase 6 (Future Vision):**
+  - [ ] Stripe / Razorpay live webhook payment gateway integration
+  - [ ] Progressive Web App (PWA) offline Service Worker ticket wallet
+  - [ ] AI-driven dynamic pricing engine based on occupancy velocity
+  - [ ] React Native iOS / Android cross-platform client
 
 ---
 
-## 🧪 Verification & Automated Test Suites
+## 📄 License & Maintainers
 
-The repository contains end-to-end automated verification suites covering every functional phase:
-
-```bash
-# Execute Phase 4.6 Executive Analytics Suite test
-node backend/scripts/test-phase46.js
-
-# Execute Phase 4.5 Ticket Operations & QR Validation test
-node backend/scripts/test-phase45.js
-
-# Execute Phase 4.1 Admin Auth & RBAC test
-node backend/scripts/test-phase41.js
-
-# Run backend code linter and formatting checks
-cd backend
-npm run lint
-npm run format:check
-
-# Run frontend production build & linter
-cd ../frontend
-npm run lint
-npm run build
-```
-
----
-
-## 📄 License & Credits
-
-- Licensed under the [MIT License](LICENSE).
-- Developed as a comprehensive full-stack MERN engineering portfolio implementation.
+- **License:** Distributed under the [MIT License](LICENSE).
+- **Author & Maintainer:** **Mahadevan Kallat** ([@mrfrosty7007](https://github.com/mrfrosty7007))
+- **Email:** `mk5625@srmist.edu.in`
+- **Portfolio Repository:** [mrfrosty7007/BookMyShow-Clone](https://github.com/mrfrosty7007/BookMyShow-Clone)

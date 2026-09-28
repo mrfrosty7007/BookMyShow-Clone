@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react';
-import { Film, Filter } from 'lucide-react';
+import { Film, Filter, MapPin } from 'lucide-react';
 import { getMovies } from '../services/api.js';
 import { useFetch } from '../hooks/useFetch.js';
+import { useCity } from '../hooks/useCity.js';
 import { HeroBanner } from '../components/HeroBanner.jsx';
 import { MovieCard } from '../components/MovieCard.jsx';
 import { Loader } from '../components/Loader.jsx';
@@ -9,13 +10,17 @@ import { EmptyState } from '../components/EmptyState.jsx';
 
 /**
  * BookMyShow-inspired Home Page
- * Renders HeroBanner, genre filtering, and responsive movie catalog grid
+ * Renders HeroBanner, genre filtering, city filtering, and responsive movie catalog grid
  */
 export const Home = () => {
+  const { selectedCity, setSelectedCity } = useCity();
   const [selectedGenre, setSelectedGenre] = useState('All');
 
-  // Fetch all active movies from the live backend API
-  const { data, loading, error, refetch } = useFetch(getMovies);
+  // Fetch active movies from backend API, filtered by selectedCity if active
+  const { data, loading, error, refetch } = useFetch(
+    () => getMovies(selectedCity ? { city: selectedCity } : {}),
+    selectedCity
+  );
 
   const movies = useMemo(() => {
     return data?.movies || [];
@@ -61,9 +66,17 @@ export const Home = () => {
 
           {/* Quick Counter */}
           {!loading && (
-            <div className="text-xs font-semibold text-gray-400 bg-gray-900 px-3 py-1.5 rounded-full border border-gray-800 self-start sm:self-center">
-              Showing <span className="text-white font-bold">{filteredMovies.length}</span> of{' '}
-              <span className="text-white font-bold">{movies.length}</span> Movies
+            <div className="text-xs font-semibold text-gray-400 bg-gray-900 px-3 py-1.5 rounded-full border border-gray-800 self-start sm:self-center flex items-center gap-1.5">
+              <span>
+                Showing <span className="text-white font-bold">{filteredMovies.length}</span> of{' '}
+                <span className="text-white font-bold">{movies.length}</span> Movies
+              </span>
+              {selectedCity && (
+                <span className="inline-flex items-center gap-1 pl-1.5 border-l border-gray-700 text-[#f84464] font-bold">
+                  <MapPin className="w-3 h-3" />
+                  {selectedCity}
+                </span>
+              )}
             </div>
           )}
         </div>
@@ -109,9 +122,25 @@ export const Home = () => {
         ) : filteredMovies.length === 0 ? (
           <EmptyState
             title="No Movies Found"
-            description={`No movies found matching genre "${selectedGenre}".`}
-            actionLabel="Reset Filter"
-            onAction={() => setSelectedGenre('All')}
+            description={
+              selectedCity
+                ? `No movies currently scheduled in ${selectedCity}${selectedGenre !== 'All' ? ` matching genre "${selectedGenre}"` : ''}.`
+                : `No movies found matching genre "${selectedGenre}".`
+            }
+            actionLabel={
+              selectedGenre !== 'All'
+                ? 'Reset Genre'
+                : selectedCity
+                  ? 'View All Cities'
+                  : undefined
+            }
+            onAction={() => {
+              if (selectedGenre !== 'All') {
+                setSelectedGenre('All');
+              } else if (selectedCity) {
+                setSelectedCity('');
+              }
+            }}
           />
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6 pt-2">

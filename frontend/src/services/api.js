@@ -61,7 +61,7 @@ apiClient.interceptors.response.use(
 /**
  * Movie API Services
  */
-export const getMovies = () => apiClient.get('/movies');
+export const getMovies = (params = {}) => apiClient.get('/movies', { params });
 export const getMovie = (id) => apiClient.get(`/movies/${id}`);
 
 /**

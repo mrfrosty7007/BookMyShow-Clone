@@ -1,12 +1,21 @@
 import { useState, useEffect, useRef } from 'react';
 import { MapPin, ChevronDown, Check } from 'lucide-react';
 import { getCities } from '../services/api.js';
+import { useCity } from '../hooks/useCity.js';
 
 /**
  * City Selector Dropdown Component
  * Fetches available theater cities from backend and allows user to switch cities
  */
-export const CitySelector = ({ selectedCity, onSelectCity, includeAllOption = true }) => {
+export const CitySelector = ({
+  selectedCity: propSelectedCity,
+  onSelectCity: propOnSelectCity,
+  includeAllOption = true,
+}) => {
+  const { selectedCity: contextCity, setSelectedCity: contextSetCity } = useCity();
+  const selectedCity = propSelectedCity !== undefined ? propSelectedCity : contextCity;
+  const onSelectCity = propOnSelectCity !== undefined ? propOnSelectCity : contextSetCity;
+
   const [cities, setCities] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -19,10 +28,6 @@ export const CitySelector = ({ selectedCity, onSelectCity, includeAllOption = tr
         const res = await getCities();
         if (isMounted && res.success && Array.isArray(res.cities)) {
           setCities(res.cities);
-          // Set initial city if none selected
-          if (!selectedCity && res.cities.length > 0 && !includeAllOption) {
-            onSelectCity?.(res.cities[0]);
-          }
         }
       } catch (err) {
         console.error('Failed to load cities:', err);
@@ -35,7 +40,7 @@ export const CitySelector = ({ selectedCity, onSelectCity, includeAllOption = tr
     return () => {
       isMounted = false;
     };
-  }, [includeAllOption, onSelectCity, selectedCity]);
+  }, []);
 
   // Click outside listener
   useEffect(() => {

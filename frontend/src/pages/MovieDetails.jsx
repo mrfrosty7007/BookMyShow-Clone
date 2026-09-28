@@ -1,8 +1,9 @@
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Star, Clock, Calendar, ChevronLeft, Clapperboard, MapPin, Sparkles } from 'lucide-react';
 import { getMovie, getShowsByMovie } from '../services/api.js';
 import { useFetch } from '../hooks/useFetch.js';
+import { useCity } from '../hooks/useCity.js';
 import { ShowCard } from '../components/ShowCard.jsx';
 import { Loader } from '../components/Loader.jsx';
 import { EmptyState } from '../components/EmptyState.jsx';
@@ -22,7 +23,7 @@ const formatDuration = (minutes) => {
  */
 export const MovieDetails = () => {
   const { id } = useParams();
-  const [selectedCity, setSelectedCity] = useState('');
+  const { selectedCity, setSelectedCity } = useCity();
 
   // 1. Fetch movie details
   const {

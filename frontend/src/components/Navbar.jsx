@@ -2,12 +2,17 @@ import { useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { Film, Menu, X, Search, LogOut, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth.js';
+import { useCity } from '../hooks/useCity.js';
 import { CitySelector } from './CitySelector.jsx';
 
 /**
  * Modern BookMyShow-style Sticky Navigation Bar
  */
-export const Navbar = ({ selectedCity, onSelectCity }) => {
+export const Navbar = ({ selectedCity: propSelectedCity, onSelectCity: propOnSelectCity }) => {
+  const { selectedCity: contextCity, setSelectedCity: contextSetCity } = useCity();
+  const selectedCity = propSelectedCity !== undefined ? propSelectedCity : contextCity;
+  const onSelectCity = propOnSelectCity !== undefined ? propOnSelectCity : contextSetCity;
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { user, logout, loading: authLoading } = useAuth();

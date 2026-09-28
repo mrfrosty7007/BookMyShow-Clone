@@ -1,14 +1,43 @@
 import mongoose from 'mongoose';
 import Movie from '../models/Movie.js';
+import Theater from '../models/Theater.js';
+import Show from '../models/Show.js';
+
+const escapeRegex = (text) => {
+  if (typeof text !== 'string') return '';
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
 
 /**
- * @desc    Get all active movies sorted by newest release date
- * @route   GET /api/movies
+ * @desc    Get all active movies sorted by newest release date, optionally filtered by city
+ * @route   GET /api/movies?city=Bengaluru
  * @access  Public
  */
-export const getMovies = async (_req, res) => {
+export const getMovies = async (req, res) => {
   try {
-    const movies = await Movie.find({ isActive: true }).sort({ releaseDate: -1 }).lean();
+    const query = { isActive: true };
+
+    if (req.query.city && req.query.city.trim()) {
+      const sanitizedCity = escapeRegex(req.query.city.trim());
+      const theatersInCity = await Theater.find({
+        city: { $regex: new RegExp(`^${sanitizedCity}$`, 'i') },
+        isActive: true,
+      })
+        .select('_id')
+        .lean();
+
+      const theaterIds = theatersInCity.map((t) => t._id);
+
+      const movieIdsInCity = await Show.distinct('movie', {
+        theater: { $in: theaterIds },
+        isActive: true,
+        status: { $ne: 'cancelled' },
+      });
+
+      query._id = { $in: movieIdsInCity };
+    }
+
+    const movies = await Movie.find(query).sort({ releaseDate: -1 }).lean();
 
     return res.status(200).json({
       success: true,

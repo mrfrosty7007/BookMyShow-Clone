@@ -66,7 +66,7 @@ cd ../frontend && npm install
 npm run dev # in backend and frontend
 ```
 
-Deployable to **Railway** (Backend) and **Vercel** (Frontend) in under 5 minutes with zero configuration drift.
+Deployable to **Render** (Backend) and **Vercel** (Frontend) with zero configuration drift.
 
 ---
 

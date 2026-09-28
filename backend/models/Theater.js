@@ -229,4 +229,8 @@ theaterSchema.pre('save', function (next) {
   next();
 });
 
+// Production indexes for city lookup and active directory sorting
+theaterSchema.index({ city: 1 });
+theaterSchema.index({ isActive: 1, name: 1 });
+
 export default mongoose.model('Theater', theaterSchema);

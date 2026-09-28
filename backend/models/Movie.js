@@ -94,7 +94,6 @@ const movieSchema = new mongoose.Schema(
     isActive: {
       type: Boolean,
       default: true,
-      index: true,
     },
     deletedAt: {
       type: Date,
@@ -117,5 +116,11 @@ movieSchema.pre('save', function (next) {
   }
   next();
 });
+
+// Compound index for active movie catalog sorted by release date (eliminates in-memory SORT)
+movieSchema.index({ isActive: 1, releaseDate: -1 });
+
+// Single field index for movie title lookup and alphabetically sorted selections
+movieSchema.index({ title: 1 });
 
 export default mongoose.model('Movie', movieSchema);

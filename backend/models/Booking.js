@@ -76,7 +76,6 @@ const bookingSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: [true, 'User reference is required'],
-      index: true,
     },
     show: {
       type: mongoose.Schema.Types.ObjectId,
@@ -128,7 +127,6 @@ const bookingSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Unique booking ID is required'],
       unique: true,
-      index: true,
       trim: true,
     },
     qrToken: {
@@ -215,5 +213,6 @@ bookingSchema.virtual('isRefundable').get(function () {
 bookingSchema.index({ createdAt: -1 });
 bookingSchema.index({ theater: 1, show: 1, status: 1 });
 bookingSchema.index({ user: 1, createdAt: -1 });
+bookingSchema.index({ paymentStatus: 1, status: 1, createdAt: -1 });
 
 export default mongoose.model('Booking', bookingSchema);

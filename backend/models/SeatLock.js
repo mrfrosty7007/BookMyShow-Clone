@@ -10,7 +10,6 @@ const seatLockSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Show',
       required: [true, 'Show ID is required'],
-      index: true,
     },
     seatNumber: {
       type: String,
@@ -39,6 +38,9 @@ const seatLockSchema = new mongoose.Schema(
 
 // Compound unique index ensuring a seat cannot have more than one active lock
 seatLockSchema.index({ showId: 1, seatNumber: 1 }, { unique: true });
+
+// Compound index for active lock lookup by showId and expiresAt
+seatLockSchema.index({ showId: 1, expiresAt: 1 });
 
 // MongoDB TTL Index for automatic expiration cleanup
 seatLockSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });

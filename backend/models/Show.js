@@ -58,13 +58,11 @@ const showSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Movie',
       required: [true, 'Movie reference is required'],
-      index: true,
     },
     theater: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Theater',
       required: [true, 'Theater reference is required'],
-      index: true,
     },
     screen: {
       type: Number,
@@ -214,5 +212,11 @@ showSchema.index({ theater: 1, screen: 1, startTime: 1, endTime: 1 });
 showSchema.index({ theater: 1, screenId: 1, startTime: 1, endTime: 1 });
 showSchema.index({ theater: 1, showTime: 1 });
 showSchema.index({ movie: 1, showTime: 1 });
+
+// Compound index for active and non-cancelled status filters (operations & admin queries)
+showSchema.index({ isActive: 1, status: 1 });
+
+// Compound index for movie-specific active showtimes
+showSchema.index({ movie: 1, isActive: 1, status: 1, showTime: 1 });
 
 export default mongoose.model('Show', showSchema);

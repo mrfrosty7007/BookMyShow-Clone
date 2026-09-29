@@ -47,24 +47,7 @@ The application is deployed publicly and ready for interactive evaluation:
 
 ---
 
-## 📸 Screenshots / Demo
 
-> This section provides visual reference points for evaluators and developers. Screenshots can be captured and added to the repository under `docs/screenshots/`.
-
-| Screen / Feature | Description | Placeholder |
-| :--- | :--- | :---: |
-| **1. Home Page / Catalog** | Hero carousel, genre filter chips, active movie cards, and city selector | `docs/screenshots/01-home-page.png` |
-| **2. User Login** | Email/password sign-in modal with demo credential helpers | `docs/screenshots/02-login.png` |
-| **3. User Registration** | Form validation with password strength indicator and terms check | `docs/screenshots/03-register.png` |
-| **4. Movie Details** | Synopsis, trailer modal, language badges, and theater showtimes | `docs/screenshots/04-movie-details.png` |
-| **5. Seat Selection** | Interactive 10x12 auditorium grid with VIP, Premium, and Regular tiers | `docs/screenshots/05-seat-grid.png` |
-| **6. Payment Simulation** | Multi-stage simulated payment processing modal (UPI / Card) | `docs/screenshots/06-payment-modal.png` |
-| **7. Booking Confirmation** | Confirmed reservation with signed QR code pass and PDF export | `docs/screenshots/07-qr-ticket.png` |
-| **8. My Bookings** | Chronological ticket history with booking status and refund option | `docs/screenshots/08-my-bookings.png` |
-| **9. Admin Executive Dashboard** | Revenue KPI ribbon, occupancy heatmap, movie analytics charts | `docs/screenshots/09-admin-dashboard.png` |
-| **10. City Selection & Filter** | Navbar city dropdown synchronizing Bengaluru, Chennai, and Hyderabad | `docs/screenshots/10-city-selector.png` |
-
----
 
 ## ✨ Features
 

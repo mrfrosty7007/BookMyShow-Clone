@@ -193,11 +193,23 @@ export const PaymentModal = ({ isOpen, onClose, show, selectedSeats = [], onPaym
                   <div className="flex items-center gap-2 text-[11px] text-gray-400">
                     <span className="flex items-center gap-1">
                       <Calendar className="w-3 h-3 text-gray-400" />
-                      {show?.date}
+                      {(() => {
+                        const raw = show?.showTime || show?.startTime;
+                        const d = raw ? new Date(raw) : null;
+                        return d && !isNaN(d.getTime())
+                          ? d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+                          : show?.date || 'Today';
+                      })()}
                     </span>
                     <span className="flex items-center gap-1">
                       <Clock className="w-3 h-3 text-amber-400" />
-                      {show?.time}
+                      {(() => {
+                        const raw = show?.showTime || show?.startTime;
+                        const d = raw ? new Date(raw) : null;
+                        return d && !isNaN(d.getTime())
+                          ? d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
+                          : show?.time || 'Scheduled';
+                      })()}
                     </span>
                   </div>
                 </div>

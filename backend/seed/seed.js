@@ -43,12 +43,15 @@ const generateShows = (createdMovies, createdTheaters) => {
 
       const screen = (i % Math.min(theater.screens, 3)) + 1;
       const price = prices[(movieIdx + i) % prices.length];
+      const endTime = new Date(showTime.getTime() + 155 * 60 * 1000);
 
       shows.push({
         movie: movie._id,
         theater: theater._id,
         screen,
         showTime,
+        startTime: showTime,
+        endTime,
         price,
         seats: generateSeatLayout(),
         isActive: true,

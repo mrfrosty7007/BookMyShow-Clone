@@ -34,7 +34,8 @@ export const ShowCard = ({ show }) => {
   const navigate = useNavigate();
   if (!show) return null;
 
-  const { theater, screen, showTime, price } = show;
+  const { theater, screen, showTime, startTime, price } = show;
+  const resolvedTime = showTime || startTime;
   const theaterName = theater?.name || 'Cinema Hall';
   const theaterCity = theater?.city || '';
   const facilities = theater?.facilities || [];
@@ -71,9 +72,9 @@ export const ShowCard = ({ show }) => {
       <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4 sm:gap-6 pt-3 sm:pt-0 border-t sm:border-t-0 border-gray-800/80">
         <div className="text-left sm:text-right">
           <div className="text-lg font-black text-white tracking-tight">
-            {formatShowTime(showTime)}
+            {formatShowTime(resolvedTime)}
           </div>
-          <div className="text-xs text-gray-400">{formatShowDate(showTime)}</div>
+          <div className="text-xs text-gray-400">{formatShowDate(resolvedTime)}</div>
         </div>
 
         <div className="text-right">

@@ -80,15 +80,20 @@ export const createBooking = async (req, res) => {
     const randomSuffix = Math.random().toString(36).substring(2, 6).toUpperCase();
     const bookingId = `BMS${Date.now().toString(36).toUpperCase()}${randomSuffix}`;
 
-    // 5. Generate secure QR token string
+    const resolvedShowTime = show.showTime || show.startTime;
+    const showDateObj = resolvedShowTime ? new Date(resolvedShowTime) : new Date();
+
+    // 5. Generate secure QR token string with ISO showTime and IST fallback
     const qrData = {
       bookingId,
       movie: show.movie?.title || 'Cinema Movie',
       theater: show.theater?.name || 'Multiplex Cinema',
       screen: show.screen || 1,
       seats,
-      date: new Date(show.showTime).toISOString().split('T')[0],
-      time: new Date(show.showTime).toLocaleTimeString('en-US', {
+      showTime: resolvedShowTime ? new Date(resolvedShowTime).toISOString() : null,
+      date: showDateObj.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }),
+      time: showDateObj.toLocaleTimeString('en-US', {
+        timeZone: 'Asia/Kolkata',
         hour: 'numeric',
         minute: '2-digit',
         hour12: true,
@@ -118,12 +123,16 @@ export const createBooking = async (req, res) => {
       seatNumber: { $in: seats },
     });
 
-    // 8. Create immutable Booking record
+    // 8. Create immutable Booking record with full show snapshot
     const booking = await Booking.create({
       user: userId,
       show: show._id,
       movie: show.movie._id,
       theater: show.theater._id,
+      showTime: resolvedShowTime,
+      screen: show.screen || 1,
+      movieTitle: show.movie?.title || 'Cinema Movie',
+      theaterName: show.theater?.name || 'Multiplex Cinema',
       seats,
       subtotal,
       convenienceFee,

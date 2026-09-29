@@ -95,6 +95,22 @@ const bookingSchema = new mongoose.Schema(
       required: [true, 'Theater reference is required'],
       index: true,
     },
+    showTime: {
+      type: Date,
+      index: true,
+    },
+    screen: {
+      type: Number,
+      default: 1,
+    },
+    movieTitle: {
+      type: String,
+      trim: true,
+    },
+    theaterName: {
+      type: String,
+      trim: true,
+    },
     seats: {
       type: [String],
       required: [true, 'At least one seat must be selected for booking'],

@@ -141,13 +141,15 @@ export const getShowById = async (req, res) => {
       });
     }
 
-    const showDate = new Date(show.showTime);
+    const targetShowTime = show.showTime || show.startTime;
+    const showDate = new Date(targetShowTime);
     const time = showDate.toLocaleTimeString('en-US', {
+      timeZone: 'Asia/Kolkata',
       hour: 'numeric',
       minute: '2-digit',
       hour12: true,
     });
-    const date = showDate.toISOString().split('T')[0];
+    const date = showDate.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
     const showObj = show;
 
     // Standardized 10x12 auditorium categorized seat layout for Phase 3.1

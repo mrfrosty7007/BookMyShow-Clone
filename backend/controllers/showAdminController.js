@@ -475,17 +475,21 @@ export const bulkCreateShows = async (req, res) => {
     for (const slotStr of timeSlots) {
       const [hours, minutes] = slotStr.split(':').map(Number);
       const dateParts = date.split('-').map(Number);
-      const start = new Date(
-        Date.UTC(dateParts[0], dateParts[1] - 1, dateParts[2], hours, minutes, 0)
-      );
-      const end = new Date(start.getTime() + totalMinutes * 60 * 1000);
+      // Construct time in Indian cinema timezone (+05:30) to prevent 5.5 hour UTC shifts
+      const padH = String(hours).padStart(2, '0');
+      const padM = String(minutes).padStart(2, '0');
+      const start = new Date(`${date}T${padH}:${padM}:00+05:30`);
+      const validStart = !isNaN(start.getTime())
+        ? start
+        : new Date(dateParts[0], dateParts[1] - 1, dateParts[2], hours, minutes, 0);
+      const end = new Date(validStart.getTime() + totalMinutes * 60 * 1000);
 
       // Check conflict
       const conflict = await checkScreenConflict({
         theaterId,
         screen: screenNumber,
         screenId: screenObj?._id,
-        startTime: start,
+        startTime: validStart,
         endTime: end,
       });
 
@@ -498,7 +502,7 @@ export const bulkCreateShows = async (req, res) => {
         continue;
       }
 
-      const pricingSnapshot = calculateShowPricing(price, start, screenType);
+      const pricingSnapshot = calculateShowPricing(price, validStart, screenType);
       const seats = generateSeatInventory(screenObj, pricingSnapshot, price);
 
       const show = await Show.create({
@@ -508,8 +512,8 @@ export const bulkCreateShows = async (req, res) => {
         screenId: screenObj?._id || null,
         screenName,
         screenType,
-        showTime: start,
-        startTime: start,
+        showTime: validStart,
+        startTime: validStart,
         endTime: end,
         movieDuration,
         trailerBuffer: Number(trailerBuffer || 15),

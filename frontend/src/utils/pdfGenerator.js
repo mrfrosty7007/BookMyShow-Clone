@@ -27,29 +27,54 @@ export const downloadTicketPDF = (booking) => {
     paymentMethod = 'UPI / Card',
   } = booking;
 
-  const movieTitle = movie?.title || 'Cinema Movie';
+  // Parse qrToken if present as an immutable snapshot fallback
+  let qrData = null;
+  if (booking?.qrToken) {
+    try {
+      qrData = typeof booking.qrToken === 'string' ? JSON.parse(booking.qrToken) : booking.qrToken;
+    } catch {
+      qrData = null;
+    }
+  }
+
+  const movieTitle = movie?.title || booking?.movieTitle || qrData?.movie || 'Cinema Movie';
   const certificate = movie?.certificate || 'U/A';
   const language = movie?.language || 'English';
-  const theaterName = theater?.name || 'Multiplex Cinema';
+  const theaterName = theater?.name || booking?.theaterName || qrData?.theater || 'Multiplex Cinema';
   const city = theater?.city || 'Cinema City';
-  const screen = show?.screen || booking?.screen || 1;
+  const screen = show?.screen || booking?.screen || qrData?.screen || 1;
 
-  const showDate = show?.showTime
-    ? new Date(show.showTime).toLocaleDateString('en-US', {
+  // Resolve best available show timestamp across model versions and snapshots
+  const rawShowTime =
+    show?.showTime ||
+    show?.startTime ||
+    booking?.showTime ||
+    qrData?.showTime;
+
+  const dateObj = rawShowTime ? new Date(rawShowTime) : null;
+  const isValidDate = dateObj && !isNaN(dateObj.getTime());
+
+  const showDate = isValidDate
+    ? dateObj.toLocaleDateString('en-US', {
         weekday: 'short',
         month: 'short',
         day: 'numeric',
         year: 'numeric',
       })
-    : booking?.date || 'Today';
+    : (booking?.date || qrData?.date || (createdAt && !isNaN(new Date(createdAt).getTime()) ? new Date(createdAt).toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      }) : 'Confirmed Date'));
 
-  const showTime = show?.showTime
-    ? new Date(show.showTime).toLocaleTimeString('en-US', {
+  const showTime = isValidDate
+    ? dateObj.toLocaleTimeString('en-US', {
         hour: 'numeric',
         minute: '2-digit',
         hour12: true,
       })
-    : booking?.time || '7:30 PM';
+    : (booking?.time || qrData?.time || 'Scheduled Time');
 
   // 1. Dark Header Background
   doc.setFillColor(15, 23, 42); // Slate 900

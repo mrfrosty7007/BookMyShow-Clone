@@ -55,22 +55,35 @@ export const BookingConfirmation = () => {
 
   const { movie, theater, show, seats = [], totalAmount = 0 } = booking;
 
-  const showDate = show?.showTime
-    ? new Date(show.showTime).toLocaleDateString('en-US', {
+  let qrData = null;
+  if (booking?.qrToken) {
+    try {
+      qrData = typeof booking.qrToken === 'string' ? JSON.parse(booking.qrToken) : booking.qrToken;
+    } catch {
+      qrData = null;
+    }
+  }
+
+  const rawShowTime = show?.showTime || show?.startTime || booking?.showTime || qrData?.showTime;
+  const dateObj = rawShowTime ? new Date(rawShowTime) : null;
+  const isValidDate = dateObj && !isNaN(dateObj.getTime());
+
+  const showDate = isValidDate
+    ? dateObj.toLocaleDateString('en-US', {
         weekday: 'short',
         month: 'short',
         day: 'numeric',
         year: 'numeric',
       })
-    : 'Today';
+    : (booking?.date || qrData?.date || 'Confirmed Date');
 
-  const showTime = show?.showTime
-    ? new Date(show.showTime).toLocaleTimeString('en-US', {
+  const showTime = isValidDate
+    ? dateObj.toLocaleTimeString('en-US', {
         hour: 'numeric',
         minute: '2-digit',
         hour12: true,
       })
-    : '7:30 PM';
+    : (booking?.time || qrData?.time || 'Scheduled Time');
 
   const backdropImage = movie?.banner || movie?.poster;
 

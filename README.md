@@ -14,6 +14,11 @@ This project is an independent academic and portfolio recreation that demonstrat
 - **Backend:** [Render](https://render.com/)
 - **Database:** [MongoDB Atlas](https://www.mongodb.com/atlas)
 
+  If you want to try ADMIN CONSOL
+
+  email-kallatmahadevan@gmail.com
+  pass-donny@2006
+
 [![Node.js](https://img.shields.io/badge/Node.js-22_LTS-339933.svg?style=flat-square&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![React](https://img.shields.io/badge/React-19.2-61DAFB.svg?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS_v4-06B6D4.svg?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
